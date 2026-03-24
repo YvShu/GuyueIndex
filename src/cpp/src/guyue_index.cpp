@@ -1,0 +1,552 @@
+/*
+ * @Author: Guyue
+ * @Date: 2026-03-23 10:00:04
+ * @LastEditTime: 2026-03-24 17:05:10
+ * @LastEditors: Guyue
+ * @FilePath: /GuyueIndex/src/cpp/src/guyue_index.cpp
+ */
+#include <guyue_index.h>
+
+GuyueIndex::GuyueIndex()
+{
+    centroids_manager_ = nullptr;
+    partition_manager_ = nullptr;
+    searcher_ = nullptr;
+    reindexing_params_ = nullptr;
+}
+
+GuyueIndex::~GuyueIndex()
+{
+    centroids_manager_ = nullptr;
+    partition_manager_ = nullptr;
+    searcher_ = nullptr;
+    reindexing_params_ = nullptr;
+}
+
+void GuyueIndex::build(std::vector<float>& vectors, std::vector<int64_t>& ids, std::shared_ptr<IndexBuildParams> build_params, std::shared_ptr<ReindexingParams> reindexing_params)
+{
+    metric_ = str_to_metric_type(build_params->metric);
+    tree_build_ = build_params->tree_build;
+    int64_t n_vectors = ids.size();
+
+    if (n_vectors == 0) // 从空开始构建
+    {
+        //////////////////////////////////////////
+        /// 初始一个空分区
+        //////////////////////////////////////////
+        std::vector<float> centroid(build_params->dimension, 0.0f);
+
+        std::shared_ptr<Clustering> partitions = std::make_shared<Clustering>();
+        partitions->dimension = build_params->dimension;
+        partitions->partition_ids = {0};
+        partitions->vectors = {vectors};
+        partitions->vector_ids = {ids};
+        partitions->centroids = centroid;
+        partition_manager_ = std::make_shared<PartitionManager>();
+        partition_manager_->init_partitions(partitions, metric_);
+
+        //////////////////////////////////////////
+        /// 初始化中心管理器
+        //////////////////////////////////////////
+        std::shared_ptr<Clustering> centroids = std::make_shared<Clustering>();
+        centroids->dimension = build_params->dimension;
+        centroids->partition_ids = {0};
+        centroids->vectors = {centroid};
+        centroids->vector_ids = {partitions->partition_ids};
+        centroids_manager_ = std::make_shared<PartitionManager>();
+        centroids_manager_->init_partitions(centroids, metric_);
+
+        //////////////////////////////////////////
+        /// 初始化分区树
+        //////////////////////////////////////////        
+        if (build_params->tree_build)
+        {
+            partition_tree_ = std::make_shared<PartitionTree>(centroids);
+        }
+    } else {
+        //////////////////////////////////////////
+        /// 聚类得到分区信息
+        //////////////////////////////////////////
+        std::shared_ptr<Clustering> partitions = kmeans(
+            n_vectors, 
+            vectors, 
+            ids, 
+            build_params->nlist, 
+            metric_, 
+            build_params->niter
+        );
+        partitions->dimension = build_params->dimension;
+
+        //////////////////////////////////////////
+        /// 利用聚类结果构建分区管理器
+        //////////////////////////////////////////
+        partition_manager_ = std::make_shared<PartitionManager>();
+        partition_manager_->init_partitions(partitions, metric_);
+
+        //////////////////////////////////////////
+        /// 利用聚类结果构建中心管理器
+        //////////////////////////////////////////
+        std::shared_ptr<Clustering> centroids = std::make_shared<Clustering>();
+        centroids->dimension = build_params->dimension;
+        centroids->partition_ids = {0};
+        centroids->vectors = {partitions->centroids};
+        centroids->vector_ids = {partitions->partition_ids};
+        centroids_manager_ = std::make_shared<PartitionManager>();
+        centroids_manager_->init_partitions(centroids, metric_);
+    }
+
+    //////////////////////////////////////////
+    /// 构建查询器
+    //////////////////////////////////////////
+    searcher_ = std::make_shared<Searcher>(metric_);
+
+    //////////////////////////////////////////
+    /// 维护参数
+    //////////////////////////////////////////
+    if (reindexing_params->reindexing_strategy == "None")
+    {
+
+    } else if (reindexing_params->reindexing_strategy == "DeDrift") {
+
+    } else if (reindexing_params->reindexing_strategy == "LIRE") {
+
+    } else if (reindexing_params->reindexing_strategy == "Tree-LIRE") {
+
+    } else if (reindexing_params->reindexing_strategy == "Ada-IVF") {
+        
+    } else if (reindexing_params->reindexing_strategy == "CM") {
+
+    } else {
+        throw std::runtime_error("[GuyueIndex] build: The maintenance strategy does not exist.");
+    }
+    reindexing_params_ = std::make_shared<ReindexingParams>();
+    reindexing_params_ = reindexing_params;
+}
+
+std::shared_ptr<SearchResult> GuyueIndex::search(int64_t n_queries, std::vector<float>& queries, std::shared_ptr<SearchParams> search_params)
+{
+    if (!searcher_)
+    {
+        throw std::runtime_error("[GuyueIndex] search: No searcher. Did you build the index?");
+    }
+
+    //////////////////////////////////////////
+    /// 一阶段：执行对分区中心的查找
+    //////////////////////////////////////////
+    auto centroids_search_result = std::make_shared<SearchResult>();
+    auto centroids_search_params = std::make_shared<SearchParams>();
+    centroids_search_params->k = std::min(search_params->nprobe, (int) nlist());
+    centroids_search_result = searcher_->search_centers(centroids_manager_, n_queries, queries, centroids_search_params);
+
+    //////////////////////////////////////////
+    /// 二阶段：执行对分区的查找
+    //////////////////////////////////////////
+    auto search_results = std::make_shared<SearchResult>();
+    search_results = searcher_->search_partitions(partition_manager_, n_queries, queries, centroids_search_result->indices, search_params);
+
+    //////////////////////////////////////////
+    /// 查询信息统计
+    //////////////////////////////////////////
+    search_results->c_search_time = centroids_search_result->c_search_time;
+    search_results->search_time = search_results->c_search_time + search_results->p_search_time;
+
+    return search_results;
+}
+
+void GuyueIndex::add(std::vector<float>& vectors, std::vector<int64_t>& ids)
+{
+    if (!centroids_manager_ || !partition_manager_)
+    {
+        throw std::runtime_error("[GuyueIndex] add : No centroids_manager or partition_manager.");
+    }
+
+    //////////////////////////////////////////
+    /// 查找向量要插入分区
+    //////////////////////////////////////////
+    int d = dim();
+    int64_t n_vectors = ids.size();
+    auto insert_search_result = std::make_shared<InsertSearchResult>();
+    auto search_params = std::make_shared<SearchParams>();
+    search_params->k = 1;
+    if (!tree_build_)
+    {
+        // <分区ID，<属于该分区的向量ids>>
+        insert_search_result = searcher_->search_insert(centroids_manager_, n_vectors, vectors, search_params);
+    } else {
+        insert_search_result = searcher_->search_tree(partition_tree_, n_vectors, vectors, search_params);
+    }
+
+    //////////////////////////////////////////
+    /// 插入向量到对应的分区
+    //////////////////////////////////////////
+    std::vector<int64_t> partitions_ids = partition_manager_->get_partitions_ids();
+    size_t code_size_bytes = partition_manager_->partition_store_->code_size;
+    const uint8_t* code_ptr = reinterpret_cast<const uint8_t*>(vectors.data());
+
+#pragma omp parallel for schedule(dynamic)
+    for (int64_t p = 0; p < partitions_ids.size(); ++p)
+    {
+        if (insert_search_result->assignment.find(partitions_ids[p]) == insert_search_result->assignment.end())
+        {
+            continue;
+        }
+        int64_t p_id = partitions_ids[p];
+        int64_t p_size = insert_search_result->assignment[p_id].size();
+
+        // 向量ids离散，需要逐个插入
+        for (int64_t i = 0; i < p_size; ++i)
+        {
+            int64_t idx = insert_search_result->assignment[p_id][i];
+            partition_manager_->partition_store_->add_entries(p_id, 1, ids.data() + idx, code_ptr + idx * code_size_bytes);
+        }
+    } 
+}
+
+void GuyueIndex::remove(std::vector<int64_t>& ids)
+{
+    if (!partition_manager_)
+    {
+        throw std::runtime_error("[GuyueIndex] add : No partition_manager.");
+    }
+
+    partition_manager_->remove(ids);
+}
+
+int64_t GuyueIndex::ntotal()
+{
+    if (partition_manager_)
+    {
+        return partition_manager_->ntotal();
+    }
+    return 0;
+}
+
+int64_t GuyueIndex::nlist()
+{
+    if (partition_manager_)
+    {
+        return partition_manager_->nlist();
+    }
+    return 0;
+}
+
+int GuyueIndex::dim()
+{
+    if (partition_manager_)
+    {
+        return partition_manager_->d();
+    }
+    return 0;
+}
+
+std::vector<int64_t> GuyueIndex::add_partitions(std::shared_ptr<Clustering> partitions)
+{
+    int64_t nlist = partitions->nlist();
+
+    //////////////////////////////////////////
+    /// 执行对分区管理器(partition_manager_)的添加
+    //////////////////////////////////////////
+    std::vector<int64_t> partition_ids = partition_manager_->add_partitions(partitions);
+
+    //////////////////////////////////////////
+    /// 执行对中心管理器(centroids_manager_)的添加
+    //////////////////////////////////////////
+    std::vector<int64_t> assignment(partitions->partition_ids.size(), 0);
+    centroids_manager_->add(partitions->partition_ids.size(), partitions->centroids, partition_ids, assignment);
+
+    //////////////////////////////////////////
+    /// 修改分区状态信息
+    //////////////////////////////////////////
+
+    return partition_ids;
+}
+
+void GuyueIndex::delete_partitions(const std::vector<int64_t>& partition_ids)
+{
+    if (centroids_manager_ == nullptr)
+    {
+        throw std::runtime_error("[GuyueIndex] delete_partitions: No centroids manager.");
+    }
+
+    //////////////////////////////////////////
+    /// 删除中心管理器(centroids_manager_)中的对应中心
+    //////////////////////////////////////////
+    centroids_manager_->remove(partition_ids);
+
+    //////////////////////////////////////////
+    /// 删除分区管理器(partition_manager_)中的对应分区
+    //////////////////////////////////////////
+    partition_manager_->delete_partitions(partition_ids);
+}
+
+std::vector<int64_t> GuyueIndex::get_ids_to_split()
+{
+    std::vector<int64_t> partition_to_split;
+    std::vector<int64_t> partition_ids = partition_manager_->get_partitions_ids();
+
+    for (const auto& partition_id : partition_ids)
+    {
+        int64_t partition_size = partition_manager_->get_partition_size(partition_id);
+        if (partition_size > reindexing_params_->max_partition_size)
+        {
+            partition_to_split.push_back(partition_id);
+        }
+    }
+
+    return partition_to_split;
+}
+
+std::vector<int64_t> GuyueIndex::get_ids_to_shrink()
+{
+    std::vector<int64_t> partition_to_shrink;
+    std::vector<int64_t> partition_ids = partition_manager_->get_partitions_ids();
+
+    for (const auto& partition_id : partition_ids)
+    {
+        int64_t partition_size = partition_manager_->get_partition_size(partition_id);
+        if (partition_size < reindexing_params_->min_partition_size)
+        {
+            partition_to_shrink.push_back(partition_id);
+        }
+    }
+
+    return partition_to_shrink;
+}
+
+void GuyueIndex::local_reassign(std::vector<int64_t>& partition_ids)
+{
+    // 获取IDs一定半径范围内的分区
+    auto centroids_search_result = std::make_shared<SearchResult>();
+    auto centroids_search_params = std::make_shared<SearchParams>();
+
+    int d = dim();
+    std::vector<float> queries = centroids_manager_->get_with_copy(partition_ids);
+    int64_t n_queries = partition_ids.size();
+    centroids_search_params->k = std::min(reindexing_params_->reindexing_radius, (int) nlist());
+
+    centroids_search_result = searcher_->search_centers(
+        centroids_manager_,
+        n_queries, 
+        queries, 
+        centroids_search_params
+    );
+
+    // 获取去重后的IDs列表
+    std::vector<int64_t> reassign_ids;
+    if (!centroids_search_result->indices.empty())
+    {
+        std::unordered_set<int64_t> unique_ids;
+        for (int i = 0; i < partition_ids.size(); ++i)
+        {
+            for (int j = 0; j < centroids_search_result->indices[i].size(); ++j)
+            {
+                unique_ids.insert(centroids_search_result->indices[i][j]);
+            }
+        }
+    }
+
+    // 获取IDs包含的分区向量
+    int64_t reassign_size = reassign_ids.size();
+    std::vector<std::vector<float>> list_vectors(reassign_size);
+    std::vector<std::vector<int64_t>> list_ids(reassign_size);
+
+#pragma omp parallel for
+    for (int i = 0; i < reassign_size; ++i)
+    {
+        int64_t list_no = reassign_ids[i];
+        int64_t list_size = partition_manager_->partition_store_->list_size(list_no);
+        if (list_size == 0)
+        {
+            list_vectors[i] = {};
+            list_ids[i] = {};
+            continue;
+        }
+        auto src_codes = partition_manager_->partition_store_->get_codes(list_no);
+        auto src_ids = partition_manager_->partition_store_->get_ids(list_no);
+
+        std::vector<float> part_vectors(list_size * d);
+        const float* src_vectors = reinterpret_cast<const float*>(src_codes);
+        std::memcpy(part_vectors.data(), src_vectors, list_size * d * sizeof(float));
+
+        list_vectors[i] = std::move(part_vectors);
+        list_ids[i].assign(src_ids, src_ids + list_size);
+        partition_manager_->partition_store_->partitions_[list_no]->clear();
+    }
+
+    // 对向量进行重分配
+    for (int i = 0; i < reassign_ids.size(); ++i)
+    {
+        if (list_ids[i].empty())
+        {
+            continue;
+        }
+        add(list_vectors[i], list_ids[i]);
+    }
+}
+
+void GuyueIndex::reassign(std::vector<int64_t>& partition_ids)
+{
+    int d = dim();
+    // 获取IDs包含的分区向量
+    int64_t reassign_size = partition_ids.size();
+    std::vector<std::vector<float>> list_vectors(reassign_size);
+    std::vector<std::vector<int64_t>> list_ids(reassign_size);
+
+#pragma omp parallel for
+    for (int i = 0; i < reassign_size; ++i)
+    {
+        int64_t list_no = partition_ids[i];
+        int64_t list_size = partition_manager_->partition_store_->list_size(list_no);
+        if (list_size == 0)
+        {
+            list_vectors[i] = {};
+            list_ids[i] = {};
+            continue;
+        }
+        auto src_codes = partition_manager_->partition_store_->get_codes(list_no);
+        auto src_ids = partition_manager_->partition_store_->get_ids(list_no);
+
+        std::vector<float> part_vectors(list_size * d);
+        const float* src_vectors = reinterpret_cast<const float*>(src_codes);
+        std::memcpy(part_vectors.data(), src_vectors, list_size * d * sizeof(float));
+
+        list_vectors[i] = std::move(part_vectors);
+        list_ids[i].assign(src_ids, src_ids + list_size);
+        partition_manager_->partition_store_->partitions_[list_no]->clear();
+    }
+    delete_partitions(partition_ids);
+    
+    // 修改树结构
+    if (tree_build_)
+    {
+        partition_tree_->shrink(partition_ids);
+    }
+
+    // 对向量进行重分配
+    for (int i = 0; i < partition_ids.size(); ++i)
+    {
+        if (list_ids[i].empty())
+        {
+            continue;
+        }
+        add(list_vectors[i], list_ids[i]);
+    }
+}
+
+void GuyueIndex::ReindexingPolicy()
+{
+    if (reindexing_params_->reindexing_strategy == "None")
+    {
+        return;
+    }
+    else if (reindexing_params_->reindexing_strategy == "DeDrift") {
+        DeDrift();
+    } else if (reindexing_params_->reindexing_strategy == "LIRE") {
+        LIRE();
+    } else if (reindexing_params_->reindexing_strategy == "Tree-LIRE") {
+        TreeLIRE();
+    } else if (reindexing_params_->reindexing_strategy == "Ada-IVF") {
+        AdaIVF();
+    } else if (reindexing_params_->reindexing_strategy == "CM") {
+        CM();
+    } else {
+        throw std::runtime_error("[GuyueIndex] ReindexingPolicy: The maintenance strategy does not exist.");
+    }
+}
+
+void GuyueIndex::DeDrift()
+{
+    // TODO
+}
+
+void GuyueIndex::LIRE()
+{
+    //////////////////////////////////////////
+    /// Step1: 拆分
+    //////////////////////////////////////////
+    std::vector<int64_t> ids_to_split = get_ids_to_split();
+
+    while (ids_to_split.size() > 0)
+    {
+        // 将每个超过阈值的分区拆分为2个小分区
+        std::shared_ptr<Clustering> split_partitions;
+        split_partitions = partition_manager_->split_partitions(ids_to_split, 2, reindexing_params_->refinement_iterations);
+        delete_partitions(ids_to_split);
+        std::vector<int64_t> partition_ids = add_partitions(split_partitions);
+
+        // 为拆分分区以及附近范围内的向量触发重分配
+        local_reassign(partition_ids);
+
+        // 获取违规分区
+        ids_to_split = get_ids_to_split();
+    }
+    
+    //////////////////////////////////////////
+    /// Step2: 缩减
+    //////////////////////////////////////////
+    std::vector<int64_t> ids_to_shrink = get_ids_to_shrink();
+    
+    if (ids_to_shrink.size() > 0)
+    {
+        reassign(ids_to_shrink);
+    }
+}
+
+void GuyueIndex::TreeLIRE()
+{
+    if (!tree_build_ || !partition_tree_)
+    {
+
+    }
+    
+    //////////////////////////////////////////
+    /// Step1: 拆分
+    //////////////////////////////////////////
+    std::vector<int64_t> ids_to_split = get_ids_to_split();
+
+    while (ids_to_split.size() > 0)
+    {
+        // 将每个超过阈值的分区拆分为2个小分区
+        std::shared_ptr<Clustering> split_partitions;
+        split_partitions = partition_manager_->split_partitions(ids_to_split, 2, reindexing_params_->refinement_iterations);
+        delete_partitions(ids_to_split);
+        std::vector<int64_t> partition_ids = add_partitions(split_partitions);
+
+        // 修改树结构
+        std::vector<int64_t> assignment(split_partitions->partition_ids.size(), 0);
+        int i = 0;
+        for (int64_t ID : ids_to_split)
+        {
+            assignment[i] = ID;
+            assignment[++i] = ID;
+            ++i;
+        }
+        partition_tree_->split(ids_to_split, split_partitions->centroids, assignment);
+
+        // 为拆分分区以及附近范围内的向量触发重分配
+        local_reassign(partition_ids);
+
+        // 获取违规分区
+        ids_to_split = get_ids_to_split();
+    }
+    
+    //////////////////////////////////////////
+    /// Step2: 缩减
+    //////////////////////////////////////////
+    std::vector<int64_t> ids_to_shrink = get_ids_to_shrink();
+    
+    if (ids_to_shrink.size() > 0)
+    {
+        reassign(ids_to_shrink);
+    }
+}
+
+void GuyueIndex::AdaIVF()
+{
+    // TODO
+}
+
+void GuyueIndex::CM()
+{
+    // TODO
+}
