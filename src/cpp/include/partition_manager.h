@@ -1,7 +1,7 @@
 /*
  * @Author: Guyue
  * @Date: 2026-03-23 10:54:47
- * @LastEditTime: 2026-03-23 11:08:58
+ * @LastEditTime: 2026-04-01 16:25:04
  * @LastEditors: Guyue
  * @FilePath: /GuyueIndex/src/cpp/include/partition_manager.h
  */
@@ -11,15 +11,19 @@
 #include <common.h>
 #include <clustering.h>
 #include <dynamic_inverted_lists.h>
+#include <quantization.h>
 
 class PartitionManager {
 public:
     std::shared_ptr<faiss::DynamicInvertedLists> partition_store_ = nullptr;
     int64_t curr_partition_id_ = 0;
     faiss::MetricType metric_;
-    std::set<int64_t> resident_ids;
-    std::vector<float> mu;
-    std::vector<std::vector<float>> covs;
+    // new
+    // std::unordered_map<int64_t, float> errors_;
+    
+    // std::set<int64_t> resident_ids;
+    // std::vector<float> mu;
+    // std::vector<std::vector<float>> covs;
 
     /**
      * @brief: PartitionManager的构造函数
@@ -39,7 +43,7 @@ public:
      * @param {MetricType} metric 距离度量
      * @return {*}
      */    
-    void init_partitions(std::shared_ptr<Clustering> partitions, faiss::MetricType metric);
+    void init_partitions(std::shared_ptr<Clustering> partitions, faiss::MetricType metric, std::shared_ptr<PQParams> pq_params = nullptr);
 
     /**
      * @brief: 将向量添加到相应的分区中

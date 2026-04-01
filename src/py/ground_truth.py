@@ -100,13 +100,13 @@ def process_workload(input_data_file, input_runbook_file, output_dir, metric):
             search_count += 1
 
 if __name__ == '__main__':
-    dataset = "sift-1M"
-    workload = "workload1"
+    dataset = "deep-1M"
+    workload = "workload2"
     metric = "l2"
-    # input_data_file = f"/mnt/hgfs/DataSet/{dataset}/{dataset.split('-')[0]}_base.fvecs"
-    input_data_file = fr"/mnt/hgfs/DataSet/{dataset}/{workload}/{dataset.split('-')[0]}_base.fvecs"
-    # input_runbook_file = fr"/mnt/hgfs/DataSet/{dataset}/runbook.json"
-    input_runbook_file = fr"/mnt/hgfs/DataSet/{dataset}/{workload}/runbook.json"
+    input_data_file = f"/mnt/hgfs/DataSet/{dataset}/{dataset.split('-')[0]}_base.fvecs"
+    # input_data_file = fr"/mnt/hgfs/DataSet/{dataset}/{workload}/{dataset.split('-')[0]}_base.fvecs"
+    input_runbook_file = fr"/mnt/hgfs/DataSet/{dataset}/runbook.json"
+    # input_runbook_file = fr"/mnt/hgfs/DataSet/{dataset}/{workload}/runbook.json"
     output_dir = os.path.dirname(input_runbook_file)
 
     process_workload(input_data_file, input_runbook_file, output_dir, metric)

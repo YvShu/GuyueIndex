@@ -1,7 +1,7 @@
 /*
  * @Author: Guyue
  * @Date: 2026-03-23 10:36:54
- * @LastEditTime: 2026-03-23 10:37:24
+ * @LastEditTime: 2026-03-30 13:22:52
  * @LastEditors: Guyue
  * @FilePath: /GuyueIndex/src/cpp/src/dynamic_inverted_lists.cpp
  */
@@ -177,8 +177,8 @@ namespace faiss {
         std::vector<int64_t> vectors_pid;
         if (assignment)
         {
-            vectors.reserve(vectors_to_remove.size() * dimension_);
-            vectors_pid.reserve(vectors_to_remove.size());
+            vectors.resize(vectors_to_remove.size() * dimension_);
+            vectors_pid.resize(vectors_to_remove.size());
         }
 
         std::vector<int64_t> partitions_ids = get_partition_ids();

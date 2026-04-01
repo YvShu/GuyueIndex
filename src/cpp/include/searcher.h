@@ -1,7 +1,7 @@
 /*
  * @Author: Guyue
  * @Date: 2026-03-23 14:27:36
- * @LastEditTime: 2026-03-24 16:47:02
+ * @LastEditTime: 2026-04-01 10:30:44
  * @LastEditors: Guyue
  * @FilePath: /GuyueIndex/src/cpp/include/searcher.h
  */
@@ -15,6 +15,7 @@
 #include <partition_tree.h>
 // #include <geometry.h>
 #include <parallel.h>
+#include <immintrin.h>
 #include "faiss/utils/Heap.h"
 #include "faiss/utils/distances.h"
 
@@ -74,7 +75,18 @@ public:
      * @param {std::shared_ptr<SearchParams>} search_params 搜索参数设置
      * @return {*} 搜索结果
      */
-    std::shared_ptr<SearchResult> search_partitions(std::shared_ptr<PartitionManager> partition_manager, int64_t n_queries, std::vector<float>& queries, std::vector<std::vector<int64_t>>& scan_lists, std::shared_ptr<SearchParams> search_params);
+    std::shared_ptr<SearchResult> search_partitions(std::shared_ptr<PartitionManager> partition_manager, int64_t n_queries, std::vector<float>& queries, std::vector<std::vector<int64_t>>& scan_lists, std::shared_ptr<SearchParams> search_params, std::shared_ptr<PQParams> pq_params = nullptr);
+
+    /**
+     * @brief: 对分区执行批量搜索
+     * @param {shared_ptr<PartitionManager>} partition_manager 分区管理器
+     * @param {int64_t} n_queries 查询数量
+     * @param {vector<float>&} queries 查询向量
+     * @param {std::vector<std::vector<int64_t>>&} scan_lists 每个查询扫描的分区ids
+     * @param {std::shared_ptr<SearchParams>} search_params 搜索参数设置
+     * @return {*} 搜索结果
+     */
+    std::shared_ptr<SearchResult> search_partitions_batch(std::shared_ptr<PartitionManager> partition_manager, int64_t n_queries, std::vector<float>& queries, std::vector<std::vector<int64_t>>& scan_lists, std::shared_ptr<SearchParams> search_params, std::shared_ptr<PQParams> pq_params = nullptr);
 
     /**
      * @brief: 搜索待插入向量的所属分区
@@ -99,7 +111,7 @@ public:
      * @param {MetricType} metric 距离度量
      * @return {*}
      */    
-    void scan_one_list(const float* query_vec, const float* list_vecs, const int64_t* list_ids, int list_size, int d, float* simi, int64_t* idxi, size_t k, faiss::MetricType metric = faiss::METRIC_L2);
+    void scan_one_list(const float* query_vec, const uint8_t* list_vecs, const int64_t* list_ids, int list_size, int d, float* simi, int64_t* idxi, size_t k, faiss::MetricType metric, std::shared_ptr<PQParams> pq_params = nullptr);
 };
 
 #endif // SEARCHER_H

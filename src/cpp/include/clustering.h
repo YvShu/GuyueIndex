@@ -1,7 +1,7 @@
 /*
  * @Author: Guyue
  * @Date: 2025-11-12 15:17:57
- * @LastEditTime: 2026-03-23 11:01:45
+ * @LastEditTime: 2026-04-01 16:25:29
  * @LastEditors: Guyue
  * @FilePath: /GuyueIndex/src/cpp/include/clustering.h
  */
@@ -17,6 +17,9 @@ struct Clustering
     std::vector<int64_t> partition_ids;             // 聚类ID, [nlist]
     std::vector<std::vector<float>> vectors;        // 聚类向量, [nlist*[count*dimension]]
     std::vector<std::vector<int64_t>> vector_ids;   // 向量IDs, [nlist*count]
+    // new
+    // std::vector<std::vector<float>> dists;          // 向量到其所属分区的距离, [nlist*count]
+    // std::vector<float> errors;                      // 聚类误差, [nlist]
 
     /**
      * @brief: 获取聚类中的向量总数

@@ -1,7 +1,7 @@
 /*
  * @Author: Guyue
  * @Date: 2026-03-23 11:03:41
- * @LastEditTime: 2026-03-23 11:06:01
+ * @LastEditTime: 2026-04-01 16:23:28
  * @LastEditors: Guyue
  * @FilePath: /GuyueIndex/src/cpp/src/clustering.cpp
  */
@@ -54,9 +54,13 @@ std::shared_ptr<Clustering> kmeans(
     //////////////////////////////////////////
     /// 填充分区向量和ids
     //////////////////////////////////////////
-    std::vector<std::vector<float>> partition_vectors(nlist);
-    std::vector<std::vector<int64_t>> partition_ids(nlist);
-    std::vector<int64_t> partition_size(nlist, 0);
+    std::vector<std::vector<float>> partition_vectors(nlist);   // 每个分区包含的向量
+    std::vector<std::vector<int64_t>> partition_ids(nlist);     // 每个分区包含的向量id
+    std::vector<std::vector<float>> partition_dists(nlist);     // 每个分区向量距离中心的距离
+    // new
+    // std::vector<float> partition_errors(nlist, 0);              // 每个分区的误差
+    std::vector<int64_t> partition_size(nlist, 0);              // 每个分区的大小
+    
     for (int i = 0; i < n_vectors; ++i)
     {
         if (assign_vec[i] >= 0 && assign_vec[i] < nlist)
@@ -68,6 +72,7 @@ std::shared_ptr<Clustering> kmeans(
     {
         partition_vectors[i].reserve(partition_size[i] * d);
         partition_ids[i].reserve(partition_size[i]);
+        partition_dists[i].reserve(partition_size[i]);
     }
     for (int i = 0; i < n_vectors; ++i)
     {
@@ -79,6 +84,9 @@ std::shared_ptr<Clustering> kmeans(
                 partition_vectors[idx].push_back(vectors[i * d + j]);
             }
             partition_ids[idx].push_back(ids[i]);
+            partition_dists[idx].push_back(distance_vec[i]);
+            // new
+            // partition_errors[idx] += distance_vec[i] / partition_size[idx];
         }
     }
 
@@ -95,6 +103,9 @@ std::shared_ptr<Clustering> kmeans(
     }
     clustering->vectors = std::move(partition_vectors);
     clustering->vector_ids = std::move(partition_ids);
+    // new
+    // clustering->dists = std::move(partition_dists);
+    // clustering->errors = std::move(partition_errors);
 
     delete index_ptr;
     return clustering;

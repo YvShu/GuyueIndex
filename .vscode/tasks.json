@@ -8,6 +8,8 @@
                 "-fdiagnostics-color=always",
                 "-std=c++17",
                 "-g",
+                "-mavx2",
+                "-mfma",
                 "-I",
                 "${workspaceFolder}/src/cpp/include",
                 "${workspaceFolder}/src/cpp/src/*.cpp",

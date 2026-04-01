@@ -1,7 +1,7 @@
 // /*
 //  * @Author: Guyue
 //  * @Date: 2026-03-23 17:30:55
-//  * @LastEditTime: 2026-03-24 10:59:11
+//  * @LastEditTime: 2026-03-31 17:14:09
 //  * @LastEditors: Guyue
 //  * @FilePath: /GuyueIndex/test/search_faiss.cpp
 //  */
@@ -16,7 +16,7 @@
 //     std::string dataset = "sift-1M";
 //     size_t pos = dataset.find('-');
 //     std::string dataset_name = dataset.substr(0, pos);
-//     int k = 100;
+//     int k = 10;
 //     std::vector<float> target_recalls = {0.8, 0.825, 0.85, 0.875, 0.9, 0.925, 0.95, 0.975, 0.9875, 1.0};
 //     // std::vector<int64_t> search_nprobes = {9, 11, 12, 15, 18, 23, 32, 51, 75, 114}; // deep
 
@@ -64,6 +64,10 @@
 //     //////////////////////////////////////////
 //     /// 查询执行
 //     //////////////////////////////////////////
+//     n_queries = 1000;
+//     queries.resize(n_queries * dim);
+//     gt_ids.resize(n_queries);
+    
 //     auto search_params = std::make_shared<SearchParams>();
 //     search_params->k = k;
 //     search_params->nprobe = 5;

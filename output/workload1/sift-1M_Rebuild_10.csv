@@ -1,0 +1,10 @@
+1,insert time,0
+1,reindexing time,8998.239072
+1,nlist,2600
+2,search time,1655.704678
+2,center search time,73.519603
+2,partition search time,1582.185075
+2,search nprobe,125.000000
+2,search points,39156
+2,qps,6039.724434
+2,recall@10,0.975050

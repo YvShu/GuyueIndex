@@ -1,7 +1,7 @@
 /*
  * @Author: Guyue
  * @Date: 2026-03-23 15:39:29
- * @LastEditTime: 2026-03-24 15:16:38
+ * @LastEditTime: 2026-04-01 15:41:01
  * @LastEditors: Guyue
  * @FilePath: /GuyueIndex/src/cpp/include/guyue_index.h
  */
@@ -26,6 +26,7 @@ public:
 
     std::shared_ptr<Searcher> searcher_;                        // 索引搜索器
     std::shared_ptr<ReindexingParams> reindexing_params_;       // 重索引参数
+    std::shared_ptr<PQParams> pq_params_;                       // 量化参数
     
     faiss::MetricType metric_;                                  // 距离度量
 
@@ -49,7 +50,7 @@ public:
      * @param {shared_ptr<ReindexingParams>} reindexing_params 索引维护参数
      * @return {*}
      */    
-    void build(std::vector<float>& vectors, std::vector<int64_t>& ids, std::shared_ptr<IndexBuildParams> build_params, std::shared_ptr<ReindexingParams> reindexing_params);
+    void build(std::vector<float>& vectors, std::vector<int64_t>& ids, std::shared_ptr<IndexBuildParams> build_params, std::shared_ptr<ReindexingParams> reindexing_params, std::shared_ptr<PQParams> pq_params = nullptr);
 
     /**
      * @brief: 向量搜索
@@ -66,7 +67,7 @@ public:
      * @param {std::vector<int64_t>&} ids 添加向量的ids
      * @return {*}
      */    
-    void add(std::vector<float>& vectors, std::vector<int64_t>& ids);
+    void add(std::vector<float>& vectors, std::vector<int64_t>& ids, bool reassign = false);
 
     /**
      * @brief: 从索引中移除向量
@@ -84,7 +85,18 @@ public:
     // ========= 以上为索引基础相关方法 =========
     
     // ========= 以下为索引维护相关方法 =========
-    
+
+    /**
+     * @brief: 对某个分区中心进行增量更新(已经执行过底层向量的增/删)
+     * @param {int64_t} n_vectors 增/删向量的个数
+     * @param {int64_t} partition_id 分区ID
+     * @param {const std::vector<float>&} vectors 增/删向量
+     * @param {vector<float>& vectors, std::vector<int64_t>} vectors_ids 增/删向量对应的位置id
+     * @param {int} delta 数值1表示增加，-1表示删除
+     * @return {*}
+     */    
+    void update_centroids(int64_t n_vectors, int64_t partition_id, const std::vector<float>& vectors, std::vector<int64_t> vectors_ids, int delta = 1);
+
     /**
      * @brief: 添加分区
      * @param {shared_ptr<Clustering>} partitions 包含要添加分区的聚类对象
@@ -123,7 +135,7 @@ public:
      * @param {std::vector<int64_t>&} partition_ids 待冲分配的分区IDs
      * @return {*}
      */    
-    void reassign(std::vector<int64_t>& partition_ids);
+    void reassign(const std::vector<int64_t>& partition_ids);
     
     /**
      * @brief: 重索引器执行维护策略
@@ -148,6 +160,12 @@ public:
      * @return {*}
      */    
     void TreeLIRE();
+
+    /**
+     * @brief: 执行索引维护策略:ErrorLIRE
+     * @return {*}
+     */    
+    void ErrorLIRE();
 
     /**
      * @brief: 执行索引维护策略:AdaIVF

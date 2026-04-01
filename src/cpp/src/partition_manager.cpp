@@ -1,7 +1,7 @@
 /*
  * @Author: Guyue
  * @Date: 2026-03-23 11:01:11
- * @LastEditTime: 2026-03-23 16:57:34
+ * @LastEditTime: 2026-04-01 16:24:43
  * @LastEditors: Guyue
  * @FilePath: /GuyueIndex/src/cpp/src/partition_manager.cpp
  */
@@ -17,7 +17,7 @@ PartitionManager::~PartitionManager()
     // 底层分区存储自动释放内存
 }
 
-void PartitionManager::init_partitions(std::shared_ptr<Clustering> partitions, faiss::MetricType metric)
+void PartitionManager::init_partitions(std::shared_ptr<Clustering> partitions, faiss::MetricType metric, std::shared_ptr<PQParams> pq_params)
 {
     metric_ = metric;
     int64_t nlist = partitions->nlist();
@@ -32,26 +32,20 @@ void PartitionManager::init_partitions(std::shared_ptr<Clustering> partitions, f
     //////////////////////////////////////////
     /// 初始化分区存储
     ////////////////////////////////////////// 
-    size_t code_size_bytes = static_cast<size_t>(dim * sizeof(float));
+    size_t code_size_bytes = pq_params ? (dim * pq_params->bytes_per_dim) + pq_params->extra_bytes : static_cast<size_t>(dim * sizeof(float));
     partition_store_ = std::make_shared<faiss::DynamicInvertedLists>(0, code_size_bytes);
+    partition_store_->dimension_ = dim;
 
     //////////////////////////////////////////
-    /// 设置分区IDs
+    /// 设置分区IDs & 添加空分区列表
     ////////////////////////////////////////// 
     partitions->partition_ids.resize(nlist);
     for (int64_t i = 0; i < nlist; ++i)
     {
         partitions->partition_ids[i]= i;
-    }
-    curr_partition_id_ = nlist;
-
-    //////////////////////////////////////////
-    /// 添加空分区列表
-    ////////////////////////////////////////// 
-    for (int64_t i = 0; i < nlist; ++i)
-    {
         partition_store_->add_list(i);
     }
+    curr_partition_id_ = nlist;
 
     //////////////////////////////////////////
     /// 将向量插入各个分区
@@ -60,16 +54,18 @@ void PartitionManager::init_partitions(std::shared_ptr<Clustering> partitions, f
     {
         auto& v = partitions->vectors[i];       // vector<float> 向量数
         auto& id = partitions->vector_ids[i];   // vector<int64_t> 向量ID
-
-        if (v.size() / dim != id.size())
-        {
-            throw std::runtime_error("[PartitionManager] init_partitions: mismatch in v.size vs id.size().");
-        }
-
         size_t count = id.size();
-        if (count == 0)
+        if (count == 0) continue;
+    
+        if (pq_params)
         {
-            continue;
+            std::vector<uint8_t> codes(count * code_size_bytes);
+            for (size_t j = 0; j < count; ++j)
+            {
+                guyue::encode(v.data() + j * dim, codes.data() + j * code_size_bytes, dim);
+            }
+            partition_store_->add_entries(i, count, id.data(), codes.data());
+
         } else {
             partition_store_->add_entries(i, count, id.data(), reinterpret_cast<const uint8_t*>(v.data()));
         }
@@ -148,10 +144,6 @@ std::vector<float> PartitionManager::remove(const std::vector<int64_t>& ids, std
     {
         throw std::runtime_error("[PartitionManager] remove: partition_store_ is null.");
     }
-    // if (ids.empty() || ids.size() == 0)
-    // {
-    //     return {};
-    // }
 
     std::unordered_set<faiss::idx_t> to_remove;
     std::unordered_map<faiss::idx_t, int64_t> ids_map;
@@ -289,7 +281,7 @@ std::shared_ptr<Clustering> PartitionManager::reindexing_partitions(const std::v
         lists_size[i + 1] = partition_store_->list_size(reindexing_ids[i]);
     }
 
-    for (int i = 0; i <= reindexing_size; ++i)
+    for (int i = 1; i <= reindexing_size; ++i)
     {
         lists_size[i] += lists_size[i - 1];
     }
@@ -330,9 +322,16 @@ std::shared_ptr<Clustering> PartitionManager::split_partitions(const std::vector
     std::vector<float> split_centroids(total_new_partitions * dim, 0);
     std::vector<std::vector<float>> split_vectors;
     std::vector<std::vector<int64_t>> split_ids;
+    
+    // new
+    // std::vector<float> split_error;
 
     split_vectors.resize(total_new_partitions);
     split_ids.resize(total_new_partitions);
+    
+    // new
+    // split_error.resize(total_new_partitions);
+    
     std::shared_ptr<Clustering> split_partitions = select_partitions(partition_ids);
 
 #pragma omp parallel for schedule(dynamic)
@@ -357,6 +356,9 @@ std::shared_ptr<Clustering> PartitionManager::split_partitions(const std::vector
             
             split_vectors[i * num_splits + j] = curr_split_clustering->vectors[j];
             split_ids[i * num_splits + j] = curr_split_clustering->vector_ids[j];
+            
+            // new 
+            // split_error[i * num_splits + j] = curr_split_clustering->errors[j];
         }
     }
 
@@ -369,6 +371,9 @@ std::shared_ptr<Clustering> PartitionManager::split_partitions(const std::vector
     }
     partition->vectors = split_vectors;
     partition->vector_ids = split_ids;
+    
+    // new 
+    // partition->errors = split_error;
 
     return partition;
 }
