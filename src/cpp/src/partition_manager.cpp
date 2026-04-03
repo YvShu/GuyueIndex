@@ -1,7 +1,7 @@
 /*
  * @Author: Guyue
  * @Date: 2026-03-23 11:01:11
- * @LastEditTime: 2026-04-01 16:24:43
+ * @LastEditTime: 2026-04-03 15:17:24
  * @LastEditors: Guyue
  * @FilePath: /GuyueIndex/src/cpp/src/partition_manager.cpp
  */
@@ -63,6 +63,7 @@ void PartitionManager::init_partitions(std::shared_ptr<Clustering> partitions, f
             for (size_t j = 0; j < count; ++j)
             {
                 guyue::encode(v.data() + j * dim, codes.data() + j * code_size_bytes, dim);
+                // guyue::encode_avx2(v.data() + j * dim, codes.data() + j * code_size_bytes, dim);
             }
             partition_store_->add_entries(i, count, id.data(), codes.data());
 

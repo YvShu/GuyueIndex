@@ -1,7 +1,7 @@
 /*
  * @Author: Guyue
  * @Date: 2026-03-23 14:27:36
- * @LastEditTime: 2026-04-01 10:30:44
+ * @LastEditTime: 2026-04-03 10:55:13
  * @LastEditors: Guyue
  * @FilePath: /GuyueIndex/src/cpp/include/searcher.h
  */
@@ -36,6 +36,11 @@ public:
      */    
     ~Searcher();
 
+    size_t div_roundup(size_t num, size_t denom) 
+    {
+        return (num + static_cast<size_t>(denom) - static_cast<size_t>(1)) / static_cast<size_t>(denom);
+    }
+    
     /**
      * @brief: 对分区中心进行搜索
      * @param {shared_ptr<PartitionManager>} centroids_manager 分区中心管理器
@@ -78,6 +83,17 @@ public:
     std::shared_ptr<SearchResult> search_partitions(std::shared_ptr<PartitionManager> partition_manager, int64_t n_queries, std::vector<float>& queries, std::vector<std::vector<int64_t>>& scan_lists, std::shared_ptr<SearchParams> search_params, std::shared_ptr<PQParams> pq_params = nullptr);
 
     /**
+     * @brief: 对分区执行搜索(SIMD优化)
+     * @param {shared_ptr<PartitionManager>} partition_manager 分区管理器
+     * @param {int64_t} n_queries 查询数量
+     * @param {vector<float>&} queries 查询向量
+     * @param {std::vector<std::vector<int64_t>>&} scan_lists 每个查询扫描的分区ids
+     * @param {std::shared_ptr<SearchParams>} search_params 搜索参数设置
+     * @return {*} 搜索结果
+     */
+    std::shared_ptr<SearchResult> search_partitions_acc(std::shared_ptr<PartitionManager> partition_manager, int64_t n_queries, std::vector<float>& queries, std::vector<std::vector<int64_t>>& scan_lists, std::shared_ptr<SearchParams> search_params, std::shared_ptr<PQParams> pq_params = nullptr);
+
+    /**
      * @brief: 对分区执行批量搜索
      * @param {shared_ptr<PartitionManager>} partition_manager 分区管理器
      * @param {int64_t} n_queries 查询数量
@@ -112,6 +128,9 @@ public:
      * @return {*}
      */    
     void scan_one_list(const float* query_vec, const uint8_t* list_vecs, const int64_t* list_ids, int list_size, int d, float* simi, int64_t* idxi, size_t k, faiss::MetricType metric, std::shared_ptr<PQParams> pq_params = nullptr);
+
+
+    void accumulating_one2manyl2_avx2(const float* query, int dim, const float* dataset, std::vector<float>& result);
 };
 
 #endif // SEARCHER_H

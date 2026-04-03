@@ -1,7 +1,7 @@
 /*
  * @Author: Guyue
  * @Date: 2026-03-23 15:39:29
- * @LastEditTime: 2026-04-01 15:41:01
+ * @LastEditTime: 2026-04-03 10:29:33
  * @LastEditors: Guyue
  * @FilePath: /GuyueIndex/src/cpp/include/guyue_index.h
  */
@@ -82,6 +82,16 @@ public:
 
     int dim();
 
+    /**
+     * @brief: 计算批次数
+     * @param {size_t} num 数据量
+     * @param {size_t} denom 批次大小
+     * @return {*} 批次数
+     */
+    size_t div_roundup(size_t num, size_t denom) 
+    {
+        return (num + static_cast<size_t>(denom) - static_cast<size_t>(1)) / static_cast<size_t>(denom);
+    }
     // ========= 以上为索引基础相关方法 =========
     
     // ========= 以下为索引维护相关方法 =========

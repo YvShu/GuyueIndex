@@ -1,0 +1,140 @@
+1,search time,38.640497
+1,center search time,0.000000
+1,partition search time,0.000000
+1,search nprobe,0.000000
+1,search points,0
+1,qps,25879.584313
+1,recall@10,0.804300
+2,search time,43.798821
+2,center search time,0.000000
+2,partition search time,0.000000
+2,search nprobe,0.000000
+2,search points,0
+2,qps,22831.664807
+2,recall@10,0.826100
+3,search time,53.095643
+3,center search time,0.000000
+3,partition search time,0.000000
+3,search nprobe,0.000000
+3,search points,0
+3,qps,18833.937090
+3,recall@10,0.851300
+4,search time,66.815503
+4,center search time,0.000000
+4,partition search time,0.000000
+4,search nprobe,0.000000
+4,search points,0
+4,qps,14966.586422
+4,recall@10,0.877000
+5,search time,78.483798
+5,center search time,0.000000
+5,partition search time,0.000000
+5,search nprobe,0.000000
+5,search points,0
+5,qps,12741.483280
+5,recall@10,0.903400
+6,search time,93.177868
+6,center search time,0.000000
+6,partition search time,0.000000
+6,search nprobe,0.000000
+6,search points,0
+6,qps,10732.162277
+6,recall@10,0.925200
+7,search time,131.743572
+7,center search time,0.000000
+7,partition search time,0.000000
+7,search nprobe,0.000000
+7,search points,0
+7,qps,7590.503163
+7,recall@10,0.950200
+8,search time,207.706195
+8,center search time,0.000000
+8,partition search time,0.000000
+8,search nprobe,0.000000
+8,search points,0
+8,qps,4814.492895
+8,recall@10,0.975600
+9,search time,317.003846
+9,center search time,0.000000
+9,partition search time,0.000000
+9,search nprobe,0.000000
+9,search points,0
+9,qps,3154.535860
+9,recall@10,0.987600
+10,search time,506.495981
+10,center search time,0.000000
+10,partition search time,0.000000
+10,search nprobe,0.000000
+10,search points,0
+10,qps,1974.349329
+10,recall@10,0.995100
+1,search time,25.940401
+1,center search time,3.235476
+1,partition search time,21.431132
+1,search nprobe,19.000000
+1,search points,5795
+1,qps,38549.905223
+1,recall@10,0.804300
+2,search time,30.986785
+2,center search time,2.979489
+2,partition search time,26.646075
+2,search nprobe,22.000000
+2,search points,6730
+2,qps,32271.821681
+2,recall@10,0.826100
+3,search time,38.836680
+3,center search time,4.858029
+3,partition search time,32.329955
+3,search nprobe,27.000000
+3,search points,8285
+3,qps,25748.853919
+3,recall@10,0.851300
+4,search time,45.177896
+4,center search time,3.877364
+4,partition search time,38.895966
+4,search nprobe,33.000000
+4,search points,10167
+4,qps,22134.718270
+4,recall@10,0.877000
+5,search time,59.625846
+5,center search time,4.298218
+5,partition search time,52.676124
+5,search nprobe,42.000000
+5,search points,13010
+5,qps,16771.250508
+5,recall@10,0.903400
+6,search time,78.300729
+6,center search time,4.494607
+6,partition search time,70.403403
+6,search nprobe,54.000000
+6,search points,16825
+6,qps,12771.273177
+6,recall@10,0.925200
+7,search time,116.383409
+7,center search time,5.565150
+7,partition search time,106.690562
+7,search nprobe,77.000000
+7,search points,24192
+7,qps,8592.289989
+7,recall@10,0.950200
+8,search time,205.883845
+8,center search time,7.608016
+8,partition search time,192.969799
+8,search nprobe,130.000000
+8,search points,41482
+8,qps,4857.107657
+8,recall@10,0.975600
+9,search time,318.538333
+9,center search time,9.913605
+9,partition search time,300.952640
+9,search nprobe,195.000000
+9,search points,63047
+9,qps,3139.339591
+9,recall@10,0.987600
+10,search time,503.404950
+10,center search time,12.766388
+10,partition search time,479.668610
+10,search nprobe,296.000000
+10,search points,97248
+10,qps,1986.472322
+10,recall@10,0.995100

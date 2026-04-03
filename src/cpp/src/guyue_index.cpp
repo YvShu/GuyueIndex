@@ -1,7 +1,7 @@
 /*
  * @Author: Guyue
  * @Date: 2026-03-23 10:00:04
- * @LastEditTime: 2026-04-01 16:54:47
+ * @LastEditTime: 2026-04-03 15:25:03
  * @LastEditors: Guyue
  * @FilePath: /GuyueIndex/src/cpp/src/guyue_index.cpp
  */
@@ -158,12 +158,49 @@ std::shared_ptr<SearchResult> GuyueIndex::search(int64_t n_queries, std::vector<
     //////////////////////////////////////////
     auto search_results = std::make_shared<SearchResult>();
     search_results = searcher_->search_partitions(partition_manager_, n_queries, queries, centroids_search_result->indices, search_params, pq_params_);
+    // search_results = searcher_->search_partitions_batch(partition_manager_, n_queries, queries, centroids_search_result->indices, search_params, pq_params_);
 
     //////////////////////////////////////////
     /// 查询信息统计
     //////////////////////////////////////////
     search_results->c_search_time = centroids_search_result->c_search_time;
     search_results->search_time = search_results->c_search_time + search_results->p_search_time;
+
+
+    // int d = dim();
+    // auto search_results = std::make_shared<SearchResult>();
+    // search_results->distances.resize(n_queries);
+    // search_results->indices.resize(n_queries);
+
+    // size_t kBatchSize = div_roundup(n_queries, search_params->num_threads);
+    // parallel_for((size_t) 0, div_roundup(n_queries, kBatchSize), [&](size_t i)
+    // {
+    //     size_t begin = kBatchSize * i;
+    //     size_t curSize = std::min(n_queries - begin, kBatchSize);
+    //     std::vector<float> queryCopy(queries.begin() + begin * d, queries.begin() + (begin + curSize) * d);
+    
+    //     auto centroids_search_result = std::make_shared<SearchResult>();
+    //     auto centroids_search_params = std::make_shared<SearchParams>();
+    //     centroids_search_params->k = std::min(search_params->nprobe, (int) nlist());
+    //     centroids_search_result = searcher_->search_centers(centroids_manager_, curSize, queryCopy, centroids_search_params);
+        
+    //     auto local_search_results = std::make_shared<SearchResult>();
+    //     local_search_results = searcher_->search_partitions_acc(partition_manager_, curSize, queryCopy, centroids_search_result->indices, search_params, pq_params_);
+    //     // local_search_results = searcher_->search_partitions(partition_manager_, curSize, queryCopy, centroids_search_result->indices, search_params, pq_params_);
+
+    //     for (int j = 0; j < curSize; ++j)
+    //     {
+    //         search_results->distances[begin + j].resize(search_params->k);
+    //         search_results->indices[begin + j].resize(search_params->k);
+    //         for (int l = 0; l < search_params->k; ++l)
+    //         {
+    //             search_results->distances[begin + j][l] = local_search_results->distances[j][l];
+    //             search_results->indices[begin + j][l] = local_search_results->indices[j][l];
+    //         }
+    //         // search_results->distances[begin + j] = local_search_results->distances[j];
+    //         // search_results->indices[begin + j] = local_search_results->indices[j];
+    //     }
+    // }, search_params->num_threads);
 
     return search_results;
 }
@@ -209,10 +246,18 @@ void GuyueIndex::add(std::vector<float>& vectors, std::vector<int64_t>& ids, boo
             }
             int64_t p_id = partitions_ids[p];
             int64_t p_size = insert_search_result->assignment[p_id].size();
+
             for (int64_t i = 0; i < p_size; ++i)
             {
                 int64_t idx = insert_search_result->assignment[p_id][i];
-                partition_manager_->partition_store_->add_entries(p_id, 1, ids.data() + idx, code_ptr + idx * code_size_bytes);
+                if (pq_params_)
+                {
+                    std::vector<uint8_t> codes(code_size_bytes);
+                    guyue::encode(vectors.data() + idx * d, codes.data(), d);
+                    partition_manager_->partition_store_->add_entries(p_id, 1, ids.data() + idx, codes.data());
+                } else {
+                    partition_manager_->partition_store_->add_entries(p_id, 1, ids.data() + idx, code_ptr + idx * code_size_bytes);
+                }
             }
             
             //////////////////////////////////////////

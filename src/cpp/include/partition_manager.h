@@ -1,7 +1,7 @@
 /*
  * @Author: Guyue
  * @Date: 2026-03-23 10:54:47
- * @LastEditTime: 2026-04-01 16:25:04
+ * @LastEditTime: 2026-04-03 14:29:11
  * @LastEditors: Guyue
  * @FilePath: /GuyueIndex/src/cpp/include/partition_manager.h
  */
@@ -18,6 +18,7 @@ public:
     std::shared_ptr<faiss::DynamicInvertedLists> partition_store_ = nullptr;
     int64_t curr_partition_id_ = 0;
     faiss::MetricType metric_;
+
     // new
     // std::unordered_map<int64_t, float> errors_;
     

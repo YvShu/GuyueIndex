@@ -1,7 +1,7 @@
 /*
  * @Author: Guyue
  * @Date: 2026-03-23 10:03:48
- * @LastEditTime: 2026-03-23 10:04:17
+ * @LastEditTime: 2026-04-03 14:16:11
  * @LastEditors: Guyue
  * @FilePath: /GuyueIndex/src/cpp/include/partition_base.h
  */
@@ -9,6 +9,7 @@
 #define PARTITION_BASE_H
 
 #include <common.h>
+#include <immintrin.h>
 
 /**
  * @brief: 一个已编码的向量分区(单个)

@@ -1,7 +1,7 @@
 // /*
 //  * @Author: Guyue
 //  * @Date: 2026-03-23 17:02:39
-//  * @LastEditTime: 2026-04-01 10:40:27
+//  * @LastEditTime: 2026-04-03 15:29:03
 //  * @LastEditors: Guyue
 //  * @FilePath: /GuyueIndex/test/search_test.cpp
 //  */
@@ -20,7 +20,7 @@
 //     std::string vectors_file_path = "/mnt/hgfs/DataSet/" + dataset + "/"+ dataset_name +"_base.fvecs";
 //     std::string queries_file_path = "/mnt/hgfs/DataSet/" + dataset + "/"+ dataset_name +"_query.fvecs";
 //     std::string gt_file_path = "/mnt/hgfs/DataSet/" + dataset + "/gt_step_0.ivecs";
-//     const std::string output_csv_path = "../output/search_test/" + dataset + "_PQ1_" + std::to_string(k) + ".csv";
+//     const std::string output_csv_path = "../output/search_test/" + dataset + "_TEST_" + std::to_string(k) + ".csv";
 
 //     //////////////////////////////////////////
 //     /// 向量读取
@@ -42,8 +42,8 @@
 //     auto index = std::make_shared<GuyueIndex>();
 //     auto build_params = std::make_shared<IndexBuildParams>();
 //     build_params->dimension = dim;
-//     build_params->nlist = 1000;
-//     build_params->niter = 10;
+//     build_params->nlist = 2600;
+//     build_params->niter = 20;
 //     build_params->metric = "l2";
 
 //     auto reindexing_params = std::make_shared<ReindexingParams>();
@@ -59,6 +59,7 @@
 
 //     auto s = std::chrono::high_resolution_clock::now();
 //     index->build(vectors, vector_ids, build_params, reindexing_params, pq_params);
+//     // index->build(vectors, vector_ids, build_params, reindexing_params);
 //     auto e = std::chrono::high_resolution_clock::now();
 //     double build_time = std::chrono::duration<double>(e - s).count();
 
@@ -69,7 +70,7 @@
 //     //////////////////////////////////////////
 //     /// 查询统计
 //     //////////////////////////////////////////
-//     n_queries = 1000;
+//     n_queries = 100;
 //     queries.resize(n_queries * dim);
 //     gt_ids.resize(n_queries);
     
@@ -105,7 +106,12 @@
 
 //         while (search_params->nprobe <= index->nlist())
 //         {
+//             auto s = std::chrono::high_resolution_clock::now();
 //             search_results = index->search(n_queries, queries, search_params);
+//             auto e = std::chrono::high_resolution_clock::now();
+//             search_results->search_time = std::chrono::duration<double, std::milli>(e - s).count();
+//             search_results->search_nprobe = search_params->nprobe;
+
 //             std::vector<double> recalls = compute_recall(search_results->indices, gt_ids, k);
             
 //             recall = 0;
