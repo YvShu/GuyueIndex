@@ -1,7 +1,7 @@
 /*
  * @Author: Guyue
  * @Date: 2026-03-23 10:36:54
- * @LastEditTime: 2026-03-30 13:22:52
+ * @LastEditTime: 2026-04-03 16:42:51
  * @LastEditors: Guyue
  * @FilePath: /GuyueIndex/src/cpp/src/dynamic_inverted_lists.cpp
  */
@@ -196,9 +196,16 @@ namespace faiss {
                     if (assignment)
                     {
                         vectors_pid[ids_map[part->ids_[i]]] = p_id;
-                        std::memcpy(vectors.data() + ids_map[part->ids_[i]] * dimension_,
-                                    part->codes_ + i * part->code_size_,
-                                    part->code_size_);
+                        if (part->code_size_ == dimension_ * sizeof(float))
+                        {
+                            std::memcpy(vectors.data() + ids_map[part->ids_[i]] * dimension_,
+                                        part->codes_ + i * part->code_size_,
+                                        part->code_size_);
+                        } else {
+                            guyue::decode(part->codes_ + i * part->code_size_, 
+                                          vectors.data() + ids_map[part->ids_[i]] * dimension_, 
+                                          dimension_);
+                        }
                     }
                     part->remove(i);
                 } else {

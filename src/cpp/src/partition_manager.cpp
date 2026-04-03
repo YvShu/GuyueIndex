@@ -1,7 +1,7 @@
 /*
  * @Author: Guyue
  * @Date: 2026-03-23 11:01:11
- * @LastEditTime: 2026-04-03 15:17:24
+ * @LastEditTime: 2026-04-03 17:28:24
  * @LastEditors: Guyue
  * @FilePath: /GuyueIndex/src/cpp/src/partition_manager.cpp
  */
@@ -221,8 +221,14 @@ std::shared_ptr<Clustering> PartitionManager::select_partitions(const std::vecto
             // 优化3：预留空间并批量拷贝
             partition_ids[i].assign(ids, ids + list_size);
         } else {
-            const float* src_vectors = reinterpret_cast<const float*>(codes);
-            partition_vectors[i] = std::vector<float>(src_vectors, src_vectors + list_size * dim);
+            if (partition_store_->code_size_ == dim * sizeof(float))
+            {
+                const float* src_vectors = reinterpret_cast<const float*>(codes);
+                partition_vectors[i] = std::vector<float>(src_vectors, src_vectors + list_size * dim);
+            } else {
+                partition_vectors[i].resize(list_size * dim);
+                guyue::decode_batch(codes, partition_vectors[i].data(), list_size, dim);
+            }
             partition_ids[i] = std::vector<int64_t>(ids, ids + list_size);
         }
     }
@@ -238,6 +244,7 @@ std::shared_ptr<Clustering> PartitionManager::select_partitions(const std::vecto
 
 std::vector<int64_t> PartitionManager::add_partitions(std::shared_ptr<Clustering> partitions)
 {
+    int dim = d();
     int64_t nlist = partitions->nlist();
     std::vector<int64_t> partition_ids(nlist);
 
@@ -245,14 +252,27 @@ std::vector<int64_t> PartitionManager::add_partitions(std::shared_ptr<Clustering
     {
         int64_t list_id = partitions->partition_ids[i] + curr_partition_id_;
         partition_store_->add_list(list_id);
-        partition_store_->add_entries(
-            list_id,
-            partitions->vector_ids[i].size(),
-            partitions->vector_ids[i].data(),
-            reinterpret_cast<uint8_t*>(partitions->vectors[i].data())
-        );
+        if (partition_store_->code_size_ == dim * sizeof(float))
+        {
+            partition_store_->add_entries(
+                list_id,
+                partitions->vector_ids[i].size(),
+                partitions->vector_ids[i].data(),
+                reinterpret_cast<uint8_t*>(partitions->vectors[i].data())
+            );
+        } else {
+            std::vector<uint8_t> codes(partitions->vector_ids[i].size() * partition_store_->code_size_);
+            guyue::encode_batch(partitions->vectors[i].data(), codes.data(), partitions->vector_ids[i].size(), dim);
+            partition_store_->add_entries(
+                list_id,
+                partitions->vector_ids[i].size(),
+                partitions->vector_ids[i].data(),
+                codes.data()
+            );
+        }
         partition_ids[i] = list_id;
     }
+
     curr_partition_id_ += nlist;
 
     return partition_ids;

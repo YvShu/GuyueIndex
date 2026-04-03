@@ -1,7 +1,7 @@
 /*
  * @Author: Guyue
  * @Date: 2026-03-23 10:00:04
- * @LastEditTime: 2026-04-03 15:25:03
+ * @LastEditTime: 2026-04-03 17:29:12
  * @LastEditors: Guyue
  * @FilePath: /GuyueIndex/src/cpp/src/guyue_index.cpp
  */
@@ -157,8 +157,8 @@ std::shared_ptr<SearchResult> GuyueIndex::search(int64_t n_queries, std::vector<
     /// 二阶段：执行对分区的查找
     //////////////////////////////////////////
     auto search_results = std::make_shared<SearchResult>();
-    search_results = searcher_->search_partitions(partition_manager_, n_queries, queries, centroids_search_result->indices, search_params, pq_params_);
-    // search_results = searcher_->search_partitions_batch(partition_manager_, n_queries, queries, centroids_search_result->indices, search_params, pq_params_);
+    // search_results = searcher_->search_partitions(partition_manager_, n_queries, queries, centroids_search_result->indices, search_params, pq_params_);
+    search_results = searcher_->search_partitions_batch(partition_manager_, n_queries, queries, centroids_search_result->indices, search_params, pq_params_);
 
     //////////////////////////////////////////
     /// 查询信息统计
@@ -217,12 +217,11 @@ void GuyueIndex::add(std::vector<float>& vectors, std::vector<int64_t>& ids, boo
     //////////////////////////////////////////
     int d = dim();
     int64_t n_vectors = ids.size();
-    auto insert_search_result = std::make_shared<InsertSearchResult>();
+    auto insert_search_result = std::make_shared<InsertSearchResult>(); // <分区ID，<属于该分区的向量ids>>
     auto search_params = std::make_shared<SearchParams>();
     search_params->k = 1;
     if (!tree_build_)
     {
-        // <分区ID，<属于该分区的向量ids>>
         insert_search_result = searcher_->search_insert(centroids_manager_, n_vectors, vectors, search_params);
     } else {
         insert_search_result = searcher_->search_tree(partition_tree_, n_vectors, vectors, search_params);
@@ -546,8 +545,14 @@ void GuyueIndex::local_reassign(std::vector<int64_t>& partition_ids)
         auto src_ids = partition_manager_->partition_store_->get_ids(list_no);
 
         std::vector<float> part_vectors(list_size * d);
-        const float* src_vectors = reinterpret_cast<const float*>(src_codes);
-        std::memcpy(part_vectors.data(), src_vectors, list_size * d * sizeof(float));
+        
+        if (!pq_params_)
+        {
+            const float* src_vectors = reinterpret_cast<const float*>(src_codes);
+            std::memcpy(part_vectors.data(), src_vectors, list_size * d * sizeof(float));
+        } else {
+            guyue::decode_batch(src_codes, part_vectors.data(), list_size, d);
+        }
 
         list_vectors[i] = std::move(part_vectors);
         list_ids[i].assign(src_ids, src_ids + list_size);
@@ -588,8 +593,14 @@ void GuyueIndex::reassign(const std::vector<int64_t>& partition_ids)
         auto src_ids = partition_manager_->partition_store_->get_ids(list_no);
 
         std::vector<float> part_vectors(list_size * d);
-        const float* src_vectors = reinterpret_cast<const float*>(src_codes);
-        std::memcpy(part_vectors.data(), src_vectors, list_size * d * sizeof(float));
+        
+        if (!pq_params_)
+        {
+            const float* src_vectors = reinterpret_cast<const float*>(src_codes);
+            std::memcpy(part_vectors.data(), src_vectors, list_size * d * sizeof(float));
+        } else {
+            guyue::decode_batch(src_codes, part_vectors.data(), list_size, d);
+        }
 
         list_vectors[i] = std::move(part_vectors);
         list_ids[i].assign(src_ids, src_ids + list_size);

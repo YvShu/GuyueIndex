@@ -1,7 +1,7 @@
 /*
  * @Author: Guyue
  * @Date: 2026-03-31 09:40:43
- * @LastEditTime: 2026-04-03 15:01:34
+ * @LastEditTime: 2026-04-03 16:16:30
  * @LastEditors: Guyue
  * @FilePath: /GuyueIndex/src/cpp/include/quantization.h
  */
@@ -89,7 +89,7 @@ inline void encode_batch(const float* fvecs, uint8_t* codes, int num_vectors, in
  */
 inline void decode_batch(const uint8_t* codes, float* fvecs, int num_vectors, int dim) 
 {
-    size_t code_size_per_vec = dim + 2 * sizeof(float);
+    size_t code_size_per_vec = dim + 2 * sizeof(float); // 8 + 2 * 4
     
     for (int i = 0; i < num_vectors; ++i) {
         decode(codes + i * code_size_per_vec, fvecs + i * dim, dim);

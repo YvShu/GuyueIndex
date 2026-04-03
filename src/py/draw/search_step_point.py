@@ -46,33 +46,35 @@ colors = [
 # 设置配色方案
 group_config = {
     # f"{dataset}_Rebuild_q100_p2600_{k}": {'marker': '^', 'label': "Rebuild 2.6k"},
-    #
     # f"{dataset}_None_q100_p2600_b1000_{k}": {'marker': 'o', 'label': "None 2.6k"},
     # f"{dataset}_Build-Update_q100_p2600_b1000_{k}": {'marker': 'o', 'label': "Build+Update"},
     # f"{dataset}_Build-LIRE_q100_p2600_b1000_{k}": {'marker': 'o', 'label': "Build+LIRE"},
-    #
     # f"{dataset}_LIRE_q100_100-470_b1000_{k}": {'marker': 's', 'label': "LIRE 100-470"},
     # f"{dataset}_LIRE_q100_100-480_b1000_{k}": {'marker': 's', 'label': "LIRE 100-480"},
     # f"{dataset}_LIRE_q100_100-490_b1000_{k}": {'marker': 's', 'label': "LIRE 100-490"},
-    #
     # f"{dataset}_LIRE-Update_q100_100-470_b1000_{k}": {'marker': '*', 'label': "LIRE+Update 100-470"},
     # f"{dataset}_LIRE-Update_q100_100-480_b1000_{k}": {'marker': '*', 'label': "LIRE+Update 100-480"},
     # f"{dataset}_LIRE-Update_q100_100-490_b1000_{k}": {'marker': '*', 'label': "LIRE+Update 100-490"},
 
-    f"{dataset}_Rebuild_q1000_p2600_{k}": {'marker': '^', 'label': "Rebuild 2.6k"},
-
+    # f"{dataset}_Rebuild_q1000_p2600_{k}": {'marker': '^', 'label': "Rebuild 2.6k"},
     # f"{dataset}_None_q1000_p2600_b1000_{k}": {'marker': 'o', 'label': "None 2.6k"},
     # f"{dataset}_Build-Update_q1000_p2600_b1000_{k}": {'marker': 'o', 'label': "Build+Update"},
     # f"{dataset}_Build-LIRE_q1000_p2600_b1000_{k}": {'marker': 'o', 'label': "Build+LIRE"},
-    #
     # f"{dataset}_LIRE_q1000_100-470_b1000_{k}": {'marker': 's', 'label': "LIRE 100-470"},
     # f"{dataset}_LIRE_q1000_100-480_b1000_{k}": {'marker': 's', 'label': "LIRE 100-480"},
     # f"{dataset}_LIRE_q1000_100-490_b1000_{k}": {'marker': 's', 'label': "LIRE 100-490"},
-
-    f"{dataset}_LIRE-Update_b1000_{k}": {'marker': '*', 'label': "LIRE+Update"},
+    # f"{dataset}_LIRE-Update_b1000_{k}": {'marker': '*', 'label': "LIRE+Update"},
     # f"{dataset}_LIRE-Update_q1000_100-470_b1000_{k}": {'marker': '*', 'label': "LIRE+Update 100-470"},
     # f"{dataset}_LIRE-Update_q1000_100-480_b1000_{k}": {'marker': '*', 'label': "LIRE+Update 100-480"},
     # f"{dataset}_LIRE-Update_q1000_100-490_b1000_{k}": {'marker': '*', 'label': "LIRE+Update 100-490"},
+
+    f"{dataset}_Rebuild-PQ_q1000_p2600_{k}": {'marker': '^', 'label': "Rebuild 2.6k"},
+    f"{dataset}_PQ_q1000_p2600_b1000_{k}": {'marker': 'o', 'label': "None 2.6k"},
+    f"{dataset}_PQ-Update_q1000_p2600_b1000_{k}": {'marker': 'o', 'label': "Build+Update"},
+    f"{dataset}_PQ-LIRE_b1000_{k}": {'marker': 'o', 'label': "Build+LIRE"},
+    f"{dataset}_PQ-LIRE-Update_q1000_100-470_b1000_{k}": {'marker': '*', 'label': "LIRE+Update 100-470"},
+    f"{dataset}_PQ-LIRE-Update_q1000_100-480_b1000_{k}": {'marker': '*', 'label': "LIRE+Update 100-480"},
+    f"{dataset}_PQ-LIRE-Update_q1000_100-490_b1000_{k}": {'marker': '*', 'label': "LIRE+Update 100-490"},
 }
 
 # 设置画布大小
