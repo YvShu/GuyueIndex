@@ -1,7 +1,7 @@
 // /*
 //  * @Author: Guyue
 //  * @Date: 2026-03-23 17:02:39
-//  * @LastEditTime: 2026-04-03 16:12:25
+//  * @LastEditTime: 2026-04-06 23:03:48
 //  * @LastEditors: Guyue
 //  * @FilePath: /GuyueIndex/test/search_test.cpp
 //  */
@@ -14,13 +14,13 @@
 //     size_t pos = dataset.find('-');
 //     std::string dataset_name = dataset.substr(0, pos);
 //     int k = 10;
-//     std::vector<float> target_recalls = {0.8, 0.825, 0.85, 0.875, 0.9, 0.925, 0.95, 0.975, 0.9875, 1.0};
-//     // std::vector<int64_t> search_nprobes = {9, 11, 12, 15, 18, 23, 32, 51, 75, 114}; // deep
+//     int search_queries = 1000;
+//     std::vector<float> target_recalls = {0.8, 0.825, 0.85, 0.875, 0.9, 0.92, 0.95, 0.97, 0.98, 0.985, 0.99};
 
 //     std::string vectors_file_path = "/mnt/hgfs/DataSet/" + dataset + "/"+ dataset_name +"_base.fvecs";
 //     std::string queries_file_path = "/mnt/hgfs/DataSet/" + dataset + "/"+ dataset_name +"_query.fvecs";
 //     std::string gt_file_path = "/mnt/hgfs/DataSet/" + dataset + "/gt_step_0.ivecs";
-//     const std::string output_csv_path = "../output/search_test/" + dataset + "_TEST_" + std::to_string(k) + ".csv";
+//     const std::string output_csv_path = "../output/search_test/" + dataset + "_LVQ_" + std::to_string(k) + ".csv";
 
 //     //////////////////////////////////////////
 //     /// 向量读取
@@ -42,7 +42,7 @@
 //     auto index = std::make_shared<GuyueIndex>();
 //     auto build_params = std::make_shared<IndexBuildParams>();
 //     build_params->dimension = dim;
-//     build_params->nlist = 2600;
+//     build_params->nlist = 3000;
 //     build_params->niter = 20;
 //     build_params->metric = "l2";
 
@@ -70,23 +70,23 @@
 //     //////////////////////////////////////////
 //     /// 查询统计
 //     //////////////////////////////////////////
-//     n_queries = 100;
+//     n_queries = search_queries;
 //     queries.resize(n_queries * dim);
 //     gt_ids.resize(n_queries);
     
-//     int64_t nlist = index->nlist();
-//     auto centroids_search_result = std::make_shared<SearchResult>();
-//     auto centroids_search_params = std::make_shared<SearchParams>();
-//     centroids_search_params->k = nlist;
-//     centroids_search_result = index->searcher_->search_centers(
-//         index->centroids_manager_,
-//         n_queries,
-//         queries,
-//         centroids_search_params
-//     );
-//     double c_search_time = centroids_search_result->c_search_time;
-//     std::cout << "center search finish!" << std::endl;
-//     std::cout << "========================================================================"<< std::endl;
+//     // int64_t nlist = index->nlist();
+//     // auto centroids_search_result = std::make_shared<SearchResult>();
+//     // auto centroids_search_params = std::make_shared<SearchParams>();
+//     // centroids_search_params->k = nlist;
+//     // centroids_search_result = index->searcher_->search_centers(
+//     //     index->centroids_manager_,
+//     //     n_queries,
+//     //     queries,
+//     //     centroids_search_params
+//     // );
+//     // double c_search_time = centroids_search_result->c_search_time;
+//     // std::cout << "center search finish!" << std::endl;
+//     // std::cout << "========================================================================"<< std::endl;
 
 //     //////////////////////////////////////////
 //     /// 查询执行
@@ -106,10 +106,10 @@
 
 //         while (search_params->nprobe <= index->nlist())
 //         {
-//             auto s = std::chrono::high_resolution_clock::now();
+//             // auto s = std::chrono::high_resolution_clock::now();
 //             search_results = index->search(n_queries, queries, search_params);
-//             auto e = std::chrono::high_resolution_clock::now();
-//             search_results->search_time = std::chrono::duration<double, std::milli>(e - s).count();
+//             // auto e = std::chrono::high_resolution_clock::now();
+//             // search_results->search_time = std::chrono::duration<double, std::milli>(e - s).count();
 //             search_results->search_nprobe = search_params->nprobe;
 
 //             std::vector<double> recalls = compute_recall(search_results->indices, gt_ids, k);

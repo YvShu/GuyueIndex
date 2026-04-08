@@ -1,7 +1,7 @@
 /*
  * @Author: Guyue
  * @Date: 2026-03-23 15:39:29
- * @LastEditTime: 2026-04-03 10:29:33
+ * @LastEditTime: 2026-04-07 11:43:31
  * @LastEditors: Guyue
  * @FilePath: /GuyueIndex/src/cpp/include/guyue_index.h
  */
@@ -13,7 +13,7 @@
 #include <searcher.h>
 #include <math.h>
 // #include <matrix_utils.h>
-// #include <hit_counter.h>
+#include <hit_counter.h>
 // #include <cost_model.h>
 #include <faiss/utils/distances.h>
 

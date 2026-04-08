@@ -1,7 +1,7 @@
 /*
  * @Author: Guyue
  * @Date: 2026-03-24 10:56:02
- * @LastEditTime: 2026-04-03 18:20:08
+ * @LastEditTime: 2026-04-08 18:12:18
  * @LastEditors: Guyue
  * @FilePath: /GuyueIndex/test/workload_evaluate.cpp
  */
@@ -14,16 +14,21 @@ int main()
     size_t pos = dataset.find('-');
     std::string dataset_name = dataset.substr(0, pos);
     size_t batch_size_ = 1000;
-    int k = 10;
+    int k = 100;
     float target_recall = 0.98;
     int nprobe = 20;
+    int search_queries = 4;
+    int nlist = 3000;
+    omp_set_num_threads(2);
 
     // std::string vectors_file_path = "/mnt/hgfs/DataSet/" + dataset + "/workload2/" + dataset_name + "_base.fvecs";
     std::string vectors_file_path = "/mnt/hgfs/DataSet/" + dataset + "/" + dataset_name + "_base.fvecs";
     std::string queries_file_path = "/mnt/hgfs/DataSet/" + dataset + "/" + dataset_name + "_query.fvecs";
     std::string gt_dir_path = "/mnt/hgfs/DataSet/" + dataset + "/workload2/";
     std::string runbook_file_path = "/mnt/hgfs/DataSet/" + dataset + "/workload2/runbook.json";
-    const std::string output_csv_path = "../output/workload2/" + dataset + "_PQ-LIRE-Update_b" + std::to_string(batch_size_) + "_" + std::to_string(k) + ".csv";
+    const std::string output_csv_path = "../output/workload2/" + dataset + 
+                                        "_LIRE-LVQ_q" + std::to_string(search_queries) +
+                                        "_b" + std::to_string(batch_size_) + "_" + std::to_string(k) + ".csv";
 
     //////////////////////////////////////////
     /// 向量读取
@@ -78,11 +83,12 @@ int main()
     // reindexing_params->reindexing_strategy = "None";
     reindexing_params->reindexing_radius = 15;
     reindexing_params->refinement_iterations = 10;
-    reindexing_params->max_partition_size = 490;    // 470
-    reindexing_params->min_partition_size = 100;    // 100
+    reindexing_params->max_partition_size = 400;    // 470
+    reindexing_params->min_partition_size = 200;    // 100
     // reindexing_params->topk_largest_partitions = 64;
     reindexing_params->centroids_update = true;
 
+    // auto pq_params = nullptr;
     auto pq_params = std::make_shared<PQParams>();
 
     int search_step = 0;
@@ -156,6 +162,7 @@ int main()
                     reindexing_time += std::chrono::duration<double, std::milli>(e2 - s2).count();
                 }
                 is_build = true;
+                reindexing_params->target_nlist = 3000;
             } else {
                 for (size_t b = 0; b < div_roundup(insert_size, batch_size_); ++b)
                 {
@@ -217,7 +224,7 @@ int main()
             std::vector<std::vector<int64_t>> gt_ids = read_ivecs(gt_file_path);
             std::cout << "gt_file: " << gt_file_path << std::endl;
 
-            n_queries = 1000;
+            n_queries = search_queries;
             queries.resize(n_queries * dim);
             gt_ids.resize(n_queries);
 

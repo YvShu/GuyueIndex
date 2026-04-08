@@ -1,0 +1,86 @@
+1,insert time,10876.376390457153
+1,reindexing time,0
+2,search time,20.534276962280273
+2,search nprobe,100
+2,qps,4869.906068944698
+2,recall@10,0.9800000000000001
+3,delete time,87.3408317565918
+3,reindexing time,0
+4,insert time,257.7090263366699
+4,reindexing time,0
+5,search time,16.25800132751465
+5,search nprobe,82
+5,qps,6150.817556569049
+5,recall@10,0.9820000000000002
+6,delete time,80.0938606262207
+6,reindexing time,0
+7,insert time,191.9879913330078
+7,reindexing time,0
+8,search time,19.383668899536133
+8,search nprobe,101
+8,qps,5158.982054341275
+8,recall@10,0.9800000000000001
+9,delete time,80.12986183166504
+9,reindexing time,0
+10,insert time,186.3539218902588
+10,reindexing time,0
+11,search time,16.579627990722656
+11,search nprobe,82
+11,qps,6031.498418176589
+11,recall@10,0.9800000000000001
+12,delete time,82.83185958862305
+12,reindexing time,0
+13,insert time,216.60590171813965
+13,reindexing time,0
+14,search time,16.3421630859375
+14,search nprobe,80
+14,qps,6119.140989729225
+14,recall@10,0.9800000000000001
+15,delete time,80.10578155517578
+15,reindexing time,0
+16,insert time,179.76713180541992
+16,reindexing time,0
+17,search time,13.549327850341797
+17,search nprobe,66
+17,qps,7380.439908499032
+17,recall@10,0.982
+18,delete time,79.90455627441406
+18,reindexing time,0
+19,insert time,168.4281826019287
+19,reindexing time,0
+20,search time,12.978076934814453
+20,search nprobe,63
+20,qps,7705.30183341294
+20,recall@10,0.981
+21,delete time,80.82938194274902
+21,reindexing time,0
+22,insert time,171.9038486480713
+22,reindexing time,0
+23,search time,13.837099075317383
+23,search nprobe,63
+23,qps,7226.9483260678535
+23,recall@10,0.9819999999999999
+24,delete time,80.08742332458496
+24,reindexing time,0
+25,insert time,180.10330200195312
+25,reindexing time,0
+26,search time,14.141321182250977
+26,search nprobe,66
+26,qps,7071.475056058537
+26,recall@10,0.981
+27,delete time,79.87141609191895
+27,reindexing time,0
+28,insert time,177.8104305267334
+28,reindexing time,0
+29,search time,12.907028198242188
+29,search nprobe,63
+29,qps,7747.716861238363
+29,recall@10,0.981
+30,delete time,84.71369743347168
+30,reindexing time,0
+31,insert time,174.52621459960938
+31,reindexing time,0
+32,search time,14.579534530639648
+32,search nprobe,62
+32,qps,6858.929535085281
+32,recall@10,0.981

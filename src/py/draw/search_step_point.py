@@ -23,7 +23,9 @@ dataset = "sift-2M"
 workload = "workload2"
 base_path = fr"/home/guyue/GuyueIndex/output/{workload}/"
 save_name = dataset + ""
-k = 10
+k = 100
+q = 4
+p = 3000
 
 colors = [
     "#E57373",  # 柔和红色
@@ -41,40 +43,57 @@ colors = [
     "#4DD0E1",  # 青色
     "#A1887F",  # 棕色
     "#90A4AE",  # 蓝灰色
+    "#404040",
 ]
 
 # 设置配色方案
 group_config = {
-    # f"{dataset}_Rebuild_q100_p2600_{k}": {'marker': '^', 'label': "Rebuild 2.6k"},
-    # f"{dataset}_None_q100_p2600_b1000_{k}": {'marker': 'o', 'label': "None 2.6k"},
-    # f"{dataset}_Build-Update_q100_p2600_b1000_{k}": {'marker': 'o', 'label': "Build+Update"},
-    # f"{dataset}_Build-LIRE_q100_p2600_b1000_{k}": {'marker': 'o', 'label': "Build+LIRE"},
-    # f"{dataset}_LIRE_q100_100-470_b1000_{k}": {'marker': 's', 'label': "LIRE 100-470"},
-    # f"{dataset}_LIRE_q100_100-480_b1000_{k}": {'marker': 's', 'label': "LIRE 100-480"},
-    # f"{dataset}_LIRE_q100_100-490_b1000_{k}": {'marker': 's', 'label': "LIRE 100-490"},
-    # f"{dataset}_LIRE-Update_q100_100-470_b1000_{k}": {'marker': '*', 'label': "LIRE+Update 100-470"},
-    # f"{dataset}_LIRE-Update_q100_100-480_b1000_{k}": {'marker': '*', 'label': "LIRE+Update 100-480"},
-    # f"{dataset}_LIRE-Update_q100_100-490_b1000_{k}": {'marker': '*', 'label': "LIRE+Update 100-490"},
+    # f"{dataset}_Full_q{q}_p{p}_{k}": {'marker': '^', 'label': "Full"},
+    # f"{dataset}_None_q{q}_p{p}_b1000_{k}": {'marker': 'o', 'label': "None"},
+    # f"{dataset}_None-Update_q{q}_p{p}_b1000_{k}": {'marker': 'o', 'label': "None+Update"},
+    # f"{dataset}_None-LIRE_q{q}_p{p}_b1000_{k}": {'marker': 'o', 'label': "None+LIRE"},
+    # f"{dataset}_LIRE_q{q}_200-400_b1000_{k}": {'marker': 's', 'label': "LIRE 200-400"},
+    # f"{dataset}_LIRE_q{q}_200-410_b1000_{k}": {'marker': 's', 'label': "LIRE 200-410"},
+    # f"{dataset}_LIRE_q{q}_200-420_b1000_{k}": {'marker': 's', 'label': "LIRE 200-420"},
+    # f"{dataset}_LIRE_q{q}_p{p}_b1000_{k}": {'marker': 's', 'label': "LIRE"},
 
-    # f"{dataset}_Rebuild_q1000_p2600_{k}": {'marker': '^', 'label': "Rebuild 2.6k"},
-    # f"{dataset}_None_q1000_p2600_b1000_{k}": {'marker': 'o', 'label': "None 2.6k"},
-    # f"{dataset}_Build-Update_q1000_p2600_b1000_{k}": {'marker': 'o', 'label': "Build+Update"},
-    # f"{dataset}_Build-LIRE_q1000_p2600_b1000_{k}": {'marker': 'o', 'label': "Build+LIRE"},
-    # f"{dataset}_LIRE_q1000_100-470_b1000_{k}": {'marker': 's', 'label': "LIRE 100-470"},
-    # f"{dataset}_LIRE_q1000_100-480_b1000_{k}": {'marker': 's', 'label': "LIRE 100-480"},
-    # f"{dataset}_LIRE_q1000_100-490_b1000_{k}": {'marker': 's', 'label': "LIRE 100-490"},
-    # f"{dataset}_LIRE-Update_b1000_{k}": {'marker': '*', 'label': "LIRE+Update"},
-    # f"{dataset}_LIRE-Update_q1000_100-470_b1000_{k}": {'marker': '*', 'label': "LIRE+Update 100-470"},
-    # f"{dataset}_LIRE-Update_q1000_100-480_b1000_{k}": {'marker': '*', 'label': "LIRE+Update 100-480"},
-    # f"{dataset}_LIRE-Update_q1000_100-490_b1000_{k}": {'marker': '*', 'label': "LIRE+Update 100-490"},
+    # f"{dataset}_Full-LVQ_q{q}_p{p}_{k}": {'marker': '^', 'label': "Full LVQ"},
+    # f"{dataset}_None-LVQ_q{q}_p{p}_b1000_{k}": {'marker': 'o', 'label': "None LVQ"},
+    # f"{dataset}_None-LVQ-Update_q{q}_p{p}_b1000_{k}": {'marker': 'o', 'label': "None LVQ+Update"},
+    # f"{dataset}_None-LVQ-LIRE_q{q}_p{p}_b1000_{k}": {'marker': 'o', 'label': "None LVQ+LIRE"},
+    # f"{dataset}_LIRE-LVQ_q{q}_200-400_b1000_{k}": {'marker': 's', 'label': "LIRE LVQ 200-400"},
+    # f"{dataset}_LIRE-LVQ_q{q}_200-410_b1000_{k}": {'marker': 's', 'label': "LIRE LVQ 200-410"},
+    # f"{dataset}_LIRE-LVQ_q{q}_200-420_b1000_{k}": {'marker': 's', 'label': "LIRE LVQ 200-420"},
+    # f"{dataset}_LIRE-LVQ_q{q}_p{p}_b1000_{k}": {'marker': 's', 'label': "LIRE LVQ"},
 
-    f"{dataset}_Rebuild-PQ_q1000_p2600_{k}": {'marker': '^', 'label': "Rebuild 2.6k"},
-    f"{dataset}_PQ_q1000_p2600_b1000_{k}": {'marker': 'o', 'label': "None 2.6k"},
-    f"{dataset}_PQ-Update_q1000_p2600_b1000_{k}": {'marker': 'o', 'label': "Build+Update"},
-    f"{dataset}_PQ-LIRE_b1000_{k}": {'marker': 'o', 'label': "Build+LIRE"},
-    f"{dataset}_PQ-LIRE-Update_q1000_100-470_b1000_{k}": {'marker': '*', 'label': "LIRE+Update 100-470"},
-    f"{dataset}_PQ-LIRE-Update_q1000_100-480_b1000_{k}": {'marker': '*', 'label': "LIRE+Update 100-480"},
-    f"{dataset}_PQ-LIRE-Update_q1000_100-490_b1000_{k}": {'marker': '*', 'label': "LIRE+Update 100-490"},
+    # f"{dataset}_Full-LVQ+_q{q}_p{p}_{k}": {'marker': '^', 'label': "Full LVQ+"},
+    # f"{dataset}_None-LVQ+_q{q}_p{p}_b1000_{k}": {'marker': 'o', 'label': "None LVQ+"},
+    # f"{dataset}_None-LVQ+-Update_q{q}_p{p}_b1000_{k}": {'marker': 'o', 'label': "None LVQ++Update"},
+    # f"{dataset}_None-LVQ+-LIRE_q{q}_p{p}_b1000_{k}": {'marker': 'o', 'label': "None LVQ++LIRE"},
+
+    # f"{dataset}_Full_q{q}_p{p}_{k}": {'marker': '^', 'label': "Full LVQ"},
+    # f"{dataset}_None_q{q}_p{p}_b1000_{k}": {'marker': 'o', 'label': "None LVQ"},
+    # f"{dataset}_None-Update_q{q}_p{p}_b1000_{k}": {'marker': 'o', 'label': "None LVQ+Update"},
+    # f"{dataset}_None-LIRE_q{q}_p{p}_b1000_{k}": {'marker': 'o', 'label': "None LVQ+LIRE"},
+    # f"{dataset}_LIRE_q{q}_p{p}_b1000_{k}": {'marker': 's', 'label': "LIRE LVQ"},
+
+    # f"{dataset}_Full-Common_q{q}_p{p}_{k}": {'marker': '^', 'label': "Full LVQ"},
+    # f"{dataset}_None-Common_q{q}_p{p}_b1000_{k}": {'marker': 'o', 'label': "None LVQ"},
+    # f"{dataset}_None-Common-Update_q{q}_p{p}_b1000_{k}": {'marker': 'o', 'label': "None LVQ+Update"},
+    # f"{dataset}_None-Common-LIRE_q{q}_p{p}_b1000_{k}": {'marker': 'o', 'label': "None LVQ+LIRE"},
+    # f"{dataset}_LIRE-Common_q{q}_p{p}_b1000_{k}": {'marker': 's', 'label': "LIRE LVQ"},
+
+    f"{dataset}_Full-LVQ_q{q}_p{p}_{k}": {'marker': '^', 'label': "Full LVQ"},
+    f"{dataset}_None-LVQ_q{q}_p{p}_b1000_{k}": {'marker': 'o', 'label': "None LVQ"},
+    f"{dataset}_None-LVQ-Update_q{q}_p{p}_b1000_{k}": {'marker': 'o', 'label': "None LVQ+Update"},
+    f"{dataset}_None-LVQ-LIRE_q{q}_p{p}_b1000_{k}": {'marker': 'o', 'label': "None LVQ+LIRE"},
+    f"{dataset}_LIRE-LVQ_q{q}_p{p}_b1000_{k}": {'marker': 's', 'label': "LIRE LVQ"},
+
+    # f"{dataset}_Full-Common-LVQ_q{q}_p{p}_{k}": {'marker': '^', 'label': "Full LVQ"},
+    # f"{dataset}_None-Common-LVQ_q{q}_p{p}_b1000_{k}": {'marker': 'o', 'label': "None LVQ"},
+    # f"{dataset}_None-Common-LVQ-Update_q{q}_p{p}_b1000_{k}": {'marker': 'o', 'label': "None LVQ+Update"},
+    # f"{dataset}_None-Common-LVQ-LIRE_q{q}_p{p}_b1000_{k}": {'marker': 'o', 'label': "None LVQ+LIRE"},
+    # f"{dataset}_LIRE-Common-LVQ_q{q}_p{p}_b1000_{k}": {'marker': 's', 'label': "LIRE LVQ"},
 }
 
 # 设置画布大小
@@ -118,7 +137,7 @@ for _, config in enumerate(group_config):
 # 设置坐标轴标签和标题
 ax.set_xlabel("step", fontsize=15)
 ax.set_ylabel("Search Points", fontsize=15)
-plt.title(f'{workload.upper()} {dataset.upper()}', fontsize=17, fontweight='bold', pad=5)
+plt.title(f'{workload.upper()}-LVQ {dataset.upper()} queries-{q}', fontsize=17, fontweight='bold', pad=5)
 
 n_values = np.arange(0, step + 1)
 n = len(n_values)
@@ -139,7 +158,7 @@ ax.legend(loc='lower right', fontsize=10, frameon=True, framealpha=0.9, bbox_to_
 plt.tight_layout(pad=2.0)  # 增加padding为图例留出空间
 
 # 保存为高质量科研图像
-# plt.savefig(f'/mnt/hgfs/DataSet/experiment_results/{workload}_{dataset}_points.svg', dpi=150, bbox_inches='tight')
+plt.savefig(f'/mnt/hgfs/DataSet/experiment_results/{workload}-LVQ_{dataset}_points_q{q}.svg', dpi=150, bbox_inches='tight')
 plt.show()
 
 

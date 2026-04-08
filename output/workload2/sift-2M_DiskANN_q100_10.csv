@@ -1,0 +1,86 @@
+1,insert time,29108.327388763428
+1,reindexing time,0
+2,search time,2.2590160369873047
+2,search nprobe,76
+2,qps,44267.06068601583
+2,recall@10,0.982
+3,delete time,5493.687868118286
+3,reindexing time,0
+4,insert time,2990.663528442383
+4,reindexing time,0
+5,search time,2.3834705352783203
+5,search nprobe,82
+5,qps,41955.6266880064
+5,recall@10,0.981
+6,delete time,5264.5978927612305
+6,reindexing time,0
+7,insert time,3045.5758571624756
+7,reindexing time,0
+8,search time,2.226591110229492
+8,search nprobe,71
+8,qps,44911.7036085234
+8,recall@10,0.9810000000000001
+9,delete time,5520.830154418945
+9,reindexing time,0
+10,insert time,3052.6552200317383
+10,reindexing time,0
+11,search time,2.183675765991211
+11,search nprobe,75
+11,qps,45794.34436073807
+11,recall@10,0.981
+12,delete time,5394.226551055908
+12,reindexing time,0
+13,insert time,3082.23819732666
+13,reindexing time,0
+14,search time,2.2611618041992188
+14,search nprobe,72
+14,qps,44225.05272037115
+14,recall@10,0.982
+15,delete time,5414.281368255615
+15,reindexing time,0
+16,insert time,3052.8314113616943
+16,reindexing time,0
+17,search time,2.6178359985351562
+17,search nprobe,86
+17,qps,38199.48998178507
+17,recall@10,0.9800000000000001
+18,delete time,5484.171390533447
+18,reindexing time,0
+19,insert time,3057.8091144561768
+19,reindexing time,0
+20,search time,2.0751953125
+20,search nprobe,72
+20,qps,48188.23529411765
+20,recall@10,0.981
+21,delete time,5380.16676902771
+21,reindexing time,0
+22,insert time,3072.2153186798096
+22,reindexing time,0
+23,search time,2.2039413452148438
+23,search nprobe,71
+23,qps,45373.25832972739
+23,recall@10,0.9810000000000001
+24,delete time,5409.354209899902
+24,reindexing time,0
+25,insert time,3082.026243209839
+25,reindexing time,0
+26,search time,3.0090808868408203
+26,search nprobe,96
+26,qps,33232.7390856509
+26,recall@10,0.981
+27,delete time,5407.9296588897705
+27,reindexing time,0
+28,insert time,3061.333656311035
+28,reindexing time,0
+29,search time,2.287149429321289
+29,search nprobe,73
+29,qps,43722.54769102471
+29,recall@10,0.981
+30,delete time,5395.159959793091
+30,reindexing time,0
+31,insert time,3062.978744506836
+31,reindexing time,0
+32,search time,2.5322437286376953
+32,search nprobe,83
+32,qps,39490.66942849073
+32,recall@10,0.982

@@ -1,7 +1,7 @@
 /*
  * @Author: Guyue
  * @Date: 2026-03-31 09:40:43
- * @LastEditTime: 2026-04-03 16:16:30
+ * @LastEditTime: 2026-04-08 16:35:07
  * @LastEditors: Guyue
  * @FilePath: /GuyueIndex/src/cpp/include/quantization.h
  */
@@ -28,7 +28,13 @@ inline void encode(const float* fvec, uint8_t* code, int dim)
         if (fvec[i] > max_val) max_val = fvec[i];
     }
 
-    float step = (max_val - min_val) / 255.0f;
+    float step = 1;
+    // if (max_val <= 255)
+    // {
+    //     min_val = std::min(0.0f, min_val);
+    // } else {
+        step = (max_val - min_val) / 255.0f;
+    // }
     for (int i = 0; i < dim; ++i)
     {
         if (step == 0.0f)

@@ -1,7 +1,7 @@
 // /*
 //  * @Author: Guyue
 //  * @Date: 2026-03-23 17:30:55
-//  * @LastEditTime: 2026-03-31 17:14:09
+//  * @LastEditTime: 2026-04-06 23:08:52
 //  * @LastEditors: Guyue
 //  * @FilePath: /GuyueIndex/test/search_faiss.cpp
 //  */
@@ -17,8 +17,8 @@
 //     size_t pos = dataset.find('-');
 //     std::string dataset_name = dataset.substr(0, pos);
 //     int k = 10;
-//     std::vector<float> target_recalls = {0.8, 0.825, 0.85, 0.875, 0.9, 0.925, 0.95, 0.975, 0.9875, 1.0};
-//     // std::vector<int64_t> search_nprobes = {9, 11, 12, 15, 18, 23, 32, 51, 75, 114}; // deep
+//     int search_queries = 1000;
+//     std::vector<float> target_recalls = {0.8, 0.825, 0.85, 0.875, 0.9, 0.92, 0.95, 0.97, 0.98, 0.985, 0.99};
 
 //     std::string vectors_file_path = "/mnt/hgfs/DataSet/" + dataset + "/"+ dataset_name +"_base.fvecs";
 //     std::string queries_file_path = "/mnt/hgfs/DataSet/" + dataset + "/"+ dataset_name +"_query.fvecs";
@@ -43,7 +43,7 @@
 //     /// 索引构建
 //     //////////////////////////////////////////
 //     faiss::IndexFlatL2 quantizer = faiss::IndexFlatL2(dim);
-//     faiss::IndexIVFFlat index(&quantizer, dim, 1000, faiss::METRIC_L2);
+//     faiss::IndexIVFFlat index(&quantizer, dim, 3000, faiss::METRIC_L2);
     
 //     std::vector<int64_t> vector_ids(n_vectors, 0);
 //     for (int64_t i = 0; i < n_vectors; ++i)
@@ -64,7 +64,7 @@
 //     //////////////////////////////////////////
 //     /// 查询执行
 //     //////////////////////////////////////////
-//     n_queries = 1000;
+//     n_queries = search_queries;
 //     queries.resize(n_queries * dim);
 //     gt_ids.resize(n_queries);
     

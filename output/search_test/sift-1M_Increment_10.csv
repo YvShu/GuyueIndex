@@ -1,0 +1,81 @@
+0,build time,33099.696178
+0,insert time,1897.014882
+0,reindexing time,31202.681296
+0,nlist,3093
+1,search time,115.752426
+1,center search time,36.550046
+1,partition search time,79.202380
+1,search nprobe,21.000000
+1,search points,6679
+1,qps,86391.277881
+1,recall@10,0.804930
+2,search time,123.467363
+2,center search time,37.256968
+2,partition search time,86.210395
+2,search nprobe,25.000000
+2,search points,7958
+2,qps,80993.063730
+2,recall@10,0.828640
+3,search time,141.355144
+3,center search time,39.318062
+3,partition search time,102.037082
+3,search nprobe,30.000000
+3,search points,9559
+3,qps,70743.799745
+3,recall@10,0.852640
+4,search time,170.317619
+4,center search time,42.210829
+4,partition search time,128.106790
+4,search nprobe,37.000000
+4,search points,11808
+4,qps,58713.831597
+4,recall@10,0.877160
+5,search time,195.474935
+5,center search time,45.748015
+5,partition search time,149.726920
+5,search nprobe,46.000000
+5,search points,14702
+5,qps,51157.454023
+5,recall@10,0.900160
+6,search time,242.795939
+6,center search time,51.887674
+6,partition search time,190.908265
+6,search nprobe,58.000000
+6,search points,18568
+6,qps,41186.850329
+6,recall@10,0.921330
+7,search time,337.337310
+7,center search time,59.679955
+7,partition search time,277.657355
+7,search nprobe,85.000000
+7,search points,27284
+7,qps,29643.919316
+7,recall@10,0.950620
+8,search time,461.033377
+8,center search time,72.870095
+8,partition search time,388.163282
+8,search nprobe,123.000000
+8,search points,39570
+8,qps,21690.403556
+8,recall@10,0.970060
+9,search time,608.731897
+9,center search time,87.050407
+9,partition search time,521.681490
+9,search nprobe,160.000000
+9,search points,51543
+9,qps,16427.593246
+9,recall@10,0.980010
+10,search time,713.889526
+10,center search time,94.827240
+10,partition search time,619.062286
+10,search nprobe,190.000000
+10,search points,61255
+10,qps,14007.769600
+10,recall@10,0.985010
+11,search time,892.565632
+11,center search time,106.397080
+11,partition search time,786.168552
+11,search nprobe,240.000000
+11,search points,77448
+11,qps,11203.657906
+11,recall@10,0.990010

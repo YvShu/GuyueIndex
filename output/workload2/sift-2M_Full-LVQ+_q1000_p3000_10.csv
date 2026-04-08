@@ -1,0 +1,140 @@
+1,insert time,0
+1,reindexing time,16369.333359
+1,nlist,3000
+2,search time,54.972430
+2,center search time,4.902987
+2,partition search time,50.069443
+2,search nprobe,72.000000
+2,search points,24514
+2,qps,18190.936802
+2,recall@10,0.980200
+3,insert time,0
+3,reindexing time,0.000045
+3,nlist,3000
+4,insert time,0
+4,reindexing time,16435.846136
+4,nlist,3000
+5,search time,55.223889
+5,center search time,5.422863
+5,partition search time,49.801026
+5,search nprobe,70.000000
+5,search points,23804
+5,qps,18108.105353
+5,recall@10,0.980500
+6,insert time,0
+6,reindexing time,0.000047
+6,nlist,3000
+7,insert time,0
+7,reindexing time,16079.430594
+7,nlist,3000
+8,search time,54.129503
+8,center search time,4.685629
+8,partition search time,49.443874
+8,search nprobe,69.000000
+8,search points,23600
+8,qps,18474.213591
+8,recall@10,0.980100
+9,insert time,0
+9,reindexing time,0.000043
+9,nlist,3000
+10,insert time,0
+10,reindexing time,17084.755068
+10,nlist,3000
+11,search time,59.858114
+11,center search time,8.398870
+11,partition search time,51.459244
+11,search nprobe,69.000000
+11,search points,23452
+11,qps,16706.172867
+11,recall@10,0.980100
+12,insert time,0
+12,reindexing time,0.000044
+12,nlist,3000
+13,insert time,0
+13,reindexing time,16007.848814
+13,nlist,3000
+14,search time,55.772342
+14,center search time,5.893732
+14,partition search time,49.878610
+14,search nprobe,70.000000
+14,search points,23891
+14,qps,17930.034209
+14,recall@10,0.980200
+15,insert time,0
+15,reindexing time,0.000042
+15,nlist,3000
+16,insert time,0
+16,reindexing time,17705.493495
+16,nlist,3000
+17,search time,58.295846
+17,center search time,5.397338
+17,partition search time,52.898508
+17,search nprobe,74.000000
+17,search points,25189
+17,qps,17153.880913
+17,recall@10,0.980100
+18,insert time,0
+18,reindexing time,0.000034
+18,nlist,3000
+19,insert time,0
+19,reindexing time,16940.260612
+19,nlist,3000
+20,search time,52.448157
+20,center search time,4.959992
+20,partition search time,47.488165
+20,search nprobe,73.000000
+20,search points,24753
+20,qps,19066.446892
+20,recall@10,0.980200
+21,insert time,0
+21,reindexing time,0.000037
+21,nlist,3000
+22,insert time,0
+22,reindexing time,16475.327909
+22,nlist,3000
+23,search time,53.207387
+23,center search time,5.406217
+23,partition search time,47.801170
+23,search nprobe,69.000000
+23,search points,23469
+23,qps,18794.382818
+23,recall@10,0.980600
+24,insert time,0
+24,reindexing time,0.000043
+24,nlist,3000
+25,insert time,0
+25,reindexing time,16524.635434
+25,nlist,3000
+26,search time,53.822936
+26,center search time,5.777712
+26,partition search time,48.045224
+26,search nprobe,73.000000
+26,search points,24876
+26,qps,18579.439814
+26,recall@10,0.980300
+27,insert time,0
+27,reindexing time,0.000046
+27,nlist,3000
+28,insert time,0
+28,reindexing time,16509.056259
+28,nlist,3000
+29,search time,54.203093
+29,center search time,5.046987
+29,partition search time,49.156106
+29,search nprobe,73.000000
+29,search points,24831
+29,qps,18449.131676
+29,recall@10,0.980400
+30,insert time,0
+30,reindexing time,0.000035
+30,nlist,3000
+31,insert time,0
+31,reindexing time,16263.914572
+31,nlist,3000
+32,search time,52.576213
+32,center search time,5.036125
+32,partition search time,47.540088
+32,search nprobe,69.000000
+32,search points,23548
+32,qps,19020.008155
+32,recall@10,0.980200

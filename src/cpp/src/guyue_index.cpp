@@ -1,7 +1,7 @@
 /*
  * @Author: Guyue
  * @Date: 2026-03-23 10:00:04
- * @LastEditTime: 2026-04-03 17:29:12
+ * @LastEditTime: 2026-04-08 18:12:12
  * @LastEditors: Guyue
  * @FilePath: /GuyueIndex/src/cpp/src/guyue_index.cpp
  */
@@ -70,7 +70,7 @@ void GuyueIndex::build(std::vector<float>& vectors, std::vector<int64_t>& ids, s
         if (build_params->tree_build)
         {
             partition_tree_ = std::make_shared<PartitionTree>(centroids);
-        }
+        };
     } else {
         //////////////////////////////////////////
         /// 聚类得到分区信息
@@ -741,50 +741,50 @@ void GuyueIndex::LIRE()
         reassign(ids_to_shrink);
     }
 
-    // if (reindexing_params_->target_nlist != -1)
-    // {
-    //     // 需要缩减分区
-    //     while (nlist() > reindexing_params_->target_nlist)
-    //     {
-    //         int64_t min_size = reindexing_params_->max_partition_size;
-    //         int64_t partition_to_shrink;
-    //         std::vector<int64_t> partition_ids = partition_manager_->get_partitions_ids();
+    if (reindexing_params_->target_nlist != -1)
+    {
+        // 需要缩减分区
+        while (nlist() > reindexing_params_->target_nlist)
+        {
+            int64_t min_size = reindexing_params_->max_partition_size;
+            int64_t partition_to_shrink;
+            std::vector<int64_t> partition_ids = partition_manager_->get_partitions_ids();
 
-    //         for (const auto& partition_id : partition_ids)
-    //         {
-    //             int64_t partition_size = partition_manager_->get_partition_size(partition_id);
-    //             if (partition_size < min_size)
-    //             {
-    //                 partition_to_shrink = partition_id;
-    //                 min_size = partition_size;
-    //             }
-    //         }
-    //         reassign({partition_to_shrink});
-    //     }
+            for (const auto& partition_id : partition_ids)
+            {
+                int64_t partition_size = partition_manager_->get_partition_size(partition_id);
+                if (partition_size < min_size)
+                {
+                    partition_to_shrink = partition_id;
+                    min_size = partition_size;
+                }
+            }
+            reassign({partition_to_shrink});
+        }
 
-    //     // 需要分裂
-    //     while (nlist() < reindexing_params_->target_nlist)
-    //     {
-    //         int64_t max_size = reindexing_params_->min_partition_size;
-    //         int64_t partition_to_split;
-    //         std::vector<int64_t> partition_ids = partition_manager_->get_partitions_ids();
+        // 需要分裂
+        while (nlist() < reindexing_params_->target_nlist)
+        {
+            int64_t max_size = reindexing_params_->min_partition_size;
+            int64_t partition_to_split;
+            std::vector<int64_t> partition_ids = partition_manager_->get_partitions_ids();
 
-    //         for (const auto& partition_id : partition_ids)
-    //         {
-    //             int64_t partition_size = partition_manager_->get_partition_size(partition_id);
-    //             if (partition_size > max_size)
-    //             {
-    //                 partition_to_split = partition_id;
-    //                 max_size = partition_size;
-    //             }
-    //         }
-    //         std::shared_ptr<Clustering> split_partitions;
-    //         split_partitions = partition_manager_->split_partitions({partition_to_split}, 2, reindexing_params_->refinement_iterations);
-    //         delete_partitions({partition_to_split});
-    //         std::vector<int64_t> new_ids = add_partitions(split_partitions);
-    //         local_reassign(new_ids);
-    //     }
-    // }
+            for (const auto& partition_id : partition_ids)
+            {
+                int64_t partition_size = partition_manager_->get_partition_size(partition_id);
+                if (partition_size > max_size)
+                {
+                    partition_to_split = partition_id;
+                    max_size = partition_size;
+                }
+            }
+            std::shared_ptr<Clustering> split_partitions;
+            split_partitions = partition_manager_->split_partitions({partition_to_split}, 2, reindexing_params_->refinement_iterations);
+            delete_partitions({partition_to_split});
+            std::vector<int64_t> new_ids = add_partitions(split_partitions);
+            local_reassign(new_ids);
+        }
+    }
 }
 
 void GuyueIndex::TreeLIRE()

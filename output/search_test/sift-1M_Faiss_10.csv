@@ -1,40 +1,45 @@
-1,search time,34.142047
-1,search nprobe,13
-1,qps,29289.397909
-1,recall@10,0.806900
-2,search time,44.418331
-2,search nprobe,15
-2,qps,22513.227703
-2,recall@10,0.826500
-3,search time,64.125332
-3,search nprobe,18
-3,qps,15594.461172
-3,recall@10,0.852100
-4,search time,76.999403
-4,search nprobe,22
-4,qps,12987.113679
-4,recall@10,0.879000
-5,search time,88.875456
-5,search nprobe,27
-5,qps,11251.700357
-5,recall@10,0.901400
-6,search time,111.021917
-6,search nprobe,34
-6,qps,9007.230527
-6,recall@10,0.925700
-7,search time,161.946987
-7,search nprobe,46
-7,qps,6174.860172
+1,search time,18.677572
+1,search nprobe,21
+1,qps,53540.149651
+1,recall@10,0.801900
+2,search time,23.186983
+2,search nprobe,25
+2,qps,43127.646232
+2,recall@10,0.827200
+3,search time,38.202279
+3,search nprobe,30
+3,qps,26176.448792
+3,recall@10,0.850700
+4,search time,48.564222
+4,search nprobe,38
+4,qps,20591.290436
+4,recall@10,0.878000
+5,search time,50.794854
+5,search nprobe,48
+5,qps,19687.033651
+5,recall@10,0.900800
+6,search time,61.756266
+6,search nprobe,59
+6,qps,16192.688852
+6,recall@10,0.920400
+7,search time,95.898991
+7,search nprobe,88
+7,qps,10427.638389
 7,recall@10,0.950300
-8,search time,252.890642
-8,search nprobe,69
-8,qps,3954.278387
-8,recall@10,0.975400
-9,search time,407.848970
-9,search nprobe,104
-9,qps,2451.888011
-9,recall@10,0.987600
-10,search time,678.947933
-10,search nprobe,162
-10,qps,1472.866992
-10,recall@10,0.995100
+8,search time,141.605782
+8,search nprobe,122
+8,qps,7061.858533
+8,recall@10,0.970900
+9,search time,179.041313
+9,search nprobe,151
+9,qps,5585.303097
+9,recall@10,0.980100
+10,search time,224.697925
+10,search nprobe,183
+10,qps,4450.419380
+10,recall@10,0.985200
+11,search time,274.914015
+11,search nprobe,221
+11,qps,3637.500984
+11,recall@10,0.990100
+

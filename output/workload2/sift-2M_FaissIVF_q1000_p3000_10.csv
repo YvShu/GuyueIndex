@@ -1,0 +1,86 @@
+1,insert time,6619.416236877441
+1,reindexing time,0
+2,search time,136.05594635009766
+2,search nprobe,76
+2,qps,7349.917639224757
+2,recall@10,0.9803999999999999
+3,delete time,7.749795913696289
+3,reindexing time,0
+4,insert time,69.51475143432617
+4,reindexing time,0
+5,search time,134.59324836730957
+5,search nprobe,76
+5,qps,7429.793188964173
+5,recall@10,0.9802000000000001
+6,delete time,9.594440460205078
+6,reindexing time,0
+7,insert time,73.55856895446777
+7,reindexing time,0
+8,search time,135.2369785308838
+8,search nprobe,78
+8,qps,7394.427255498259
+8,recall@10,0.9803000000000001
+9,delete time,7.019758224487305
+9,reindexing time,0
+10,insert time,74.22256469726562
+10,reindexing time,0
+11,search time,136.3081932067871
+11,search nprobe,77
+11,qps,7336.316155867054
+11,recall@10,0.9806
+12,delete time,7.550716400146484
+12,reindexing time,0
+13,insert time,71.92158699035645
+13,reindexing time,0
+14,search time,136.63244247436523
+14,search nprobe,78
+14,qps,7318.905977894807
+14,recall@10,0.9804
+15,delete time,7.558584213256836
+15,reindexing time,0
+16,insert time,72.30210304260254
+16,reindexing time,0
+17,search time,134.62567329406738
+17,search nprobe,76
+17,qps,7428.003704877794
+17,recall@10,0.9804
+18,delete time,7.190704345703125
+18,reindexing time,0
+19,insert time,69.48685646057129
+19,reindexing time,0
+20,search time,135.12253761291504
+20,search nprobe,76
+20,qps,7400.689904630831
+20,recall@10,0.9803999999999999
+21,delete time,7.493257522583008
+21,reindexing time,0
+22,insert time,70.32084465026855
+22,reindexing time,0
+23,search time,133.29339027404785
+23,search nprobe,76
+23,qps,7502.247470366124
+23,recall@10,0.9805
+24,delete time,7.390737533569336
+24,reindexing time,0
+25,insert time,77.55255699157715
+25,reindexing time,0
+26,search time,130.20920753479004
+26,search nprobe,75
+26,qps,7679.948437846181
+26,recall@10,0.9803
+27,delete time,7.399559020996094
+27,reindexing time,0
+28,insert time,68.07136535644531
+28,reindexing time,0
+29,search time,130.94401359558105
+29,search nprobe,74
+29,qps,7636.851602002116
+29,recall@10,0.9801
+30,delete time,7.717132568359375
+30,reindexing time,0
+31,insert time,91.00484848022461
+31,reindexing time,0
+32,search time,136.13605499267578
+32,search nprobe,77
+32,qps,7345.592613608502
+32,recall@10,0.9806000000000001
